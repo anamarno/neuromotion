@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pasapalabra NeuroUsal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --morado: #4A148C;
+    --granate: #AD1457;
+    --granate-hover: #C2185B;
+    --fondo: #F8F5FB;
+    --gris: #BDBDBD;
+    --azul-skip: #1976D2;
+    --verde: #2E7D32;
+    --rojo: #C62828;
+  }
+  html, body {
+    margin: 0; padding: 0; height: 100%; background: var(--fondo);
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #222;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 {
+    color: var(--morado); text-align: center; font-weight: 800; letter-spacing: 0.3px;
+    margin: 8px 0 16px; font-size: clamp(28px, 4vw, 40px);
+  }
+  .layout { display: grid; grid-template-columns: 1fr; gap: 24px; }
+  @media (min-width: 1000px) {
+    .layout { grid-template-columns: 480px 1fr; align-items: center; }
+  }
+  .rosco-wrap { display: grid; place-items: center; }
+  .rosco {
+    position: relative; width: 420px; height: 420px; border-radius: 50%;
+    background: white; box-shadow: 0 6px 24px rgba(74,20,140,0.12), 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .letter {
+    position: absolute; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+    background: #EEE; color: #333; font-weight: 700; user-select: none; transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .letter.active { transform: scale(1.12); box-shadow: 0 6px 18px rgba(173,20,87,0.25); outline: 3px solid var(--granate); }
+  .letter.neutral { background: #EEE; color:#333; }
+  .letter.correct { background: var(--verde); color: #fff; }
+  .letter.incorrect { background: var(--rojo); color: #fff; }
+  .letter.skipped { background: var(--azul-skip); color: #fff; }
+
+  .panel {
+    background: white; border-radius: 16px; padding: 20px; box-shadow: 0 6px 24px rgba(74,20,140,0.12), 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .status { display:flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .status .timer { font-weight: 800; color: var(--granate); font-size: 20px; }
+  .status .score { font-weight: 700; color: var(--morado); }
+  .instruction { font-weight: 700; color: #555; margin: 8px 0 4px; }
+  .big-letter { text-align: center; font-size: 64px; font-weight: 800; color: var(--morado); margin: 6px 0; }
+  .definition { font-size: 16px; line-height: 1.5; color: #333; margin: 8px 0 16px; min-height: 48px; }
+
+  .input-row { display:flex; gap: 10px; align-items:center; }
+  .input-row input[type="text"] {
+    flex:1; padding: 12px 14px; border-radius: 12px; border: 2px solid #E0E0E0; font-size: 16px;
+    outline: none; transition: border 0.2s ease;
+  }
+  .input-row input[type="text"]:focus { border-color: var(--granate); }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .actions button {
+    padding: 12px 14px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer;
+    background: var(--granate); color: white; transition: background 0.15s ease, transform 0.05s;
+  }
+  .actions button:hover { background: var(--granate-hover); }
+  .actions button:active { transform: translateY(1px); }
+  .pass-btn { background: var(--azul-skip); }
+  .pass-btn:hover { background: #1E88E5; }
+
+  .endcard { display:none; background: white; border-radius: 16px; padding: 18px; margin-top: 16px; border: 2px solid #F1E4F9; }
+  .endcard.visible { display:block; }
+  .end-title { font-weight: 800; color: var(--morado); font-size: 20px; margin: 0 0 6px; }
+  .end-score { font-weight: 700; color: var(--granate); }
+  .final-actions { display:flex; gap:10px; flex-wrap: wrap; margin-top: 8px; }
+  .final-actions button { padding: 10px 12px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; background: var(--granate); color: white; }
+
+  .review { display:none; margin-top: 16px; background: white; border-radius: 16px; padding: 16px; border: 2px solid #F1E4F9; }
+  .review.visible { display:block; }
+  .review-grid { display: grid; grid-template-columns: 72px 150px 1fr 1fr; gap: 8px; align-items: start; }
+  .review-header, .review-item { padding: 8px; border-radius: 10px; }
+  .review-header { font-weight: 700; color: var(--morado); background: #F5ECFF; }
+  .review-item.correct { background: rgba(46,125,50,0.08); }
+  .review-item.incorrect { background: rgba(198,40,40,0.10); }
+  .review-item.skipped { background: rgba(25,118,210,0.10); }
+  .review-item.neutral { background: rgba(0,0,0,0.05); }
+
+  .legend { display:flex; gap:12px; font-size: 13px; color:#555; margin-top: 8px; }
+  .legend span::before {
+    content: ''; display:inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 3px; vertical-align: -2px;
+  }
+  .legend .l-correct::before { background: var(--verde); }
+  .legend .l-incorrect::before { background: var(--rojo); }
+  .legend .l-skipped::before { background: var(--azul-skip); }
+  .legend .l-neutral::before { background: #CCC; }
+
+  /* Imagen dinámica por letra */
+  .letter-img { display:block; margin: 14px auto 0; max-width: 220px; opacity: 0.95; border-radius: 12px; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pasapalabra NeuroUsal</h1>
+    <div class="layout">
+      <div class="rosco-wrap">
+        <div id="rosco" class="rosco" aria-label="Rosco de letras"></div>
+      </div>
+      <div class="panel">
+        <div class="status">
+          <div class="timer" id="timer" aria-live="polite">05:00</div>
+          <div class="score">Puntuación: <span id="score">0</span></div>
+        </div>
+        <div class="instruction" id="instruction">Instrucción</div>
+        <div class="big-letter" id="bigLetter">A</div>
+        <div class="definition" id="definition">Definición</div>
+
+        <div class="input-row">
+          <input type="text" id="answerInput" placeholder="Escribe tu respuesta y pulsa Enter o Responder" autocomplete="off" />
+          <button id="submitBtn" title="Responder">Responder</button>
+          <button class="pass-btn" id="passBtn" title="Pasapalabra">Pasapalabra</button>
+        </div>
+        <div class="help">Pulsa <strong>Enter</strong>: con texto = responde · vacío = <em>Pasapalabra</em>.</div>
+
+        <!-- Imagen dinámica: intenta cargar images/a.png, b.png, ... (extensión configurable) -->
+        <img id="letterImg" class="letter-img" src="images/neurona.png" alt="Imagen relacionada con la letra">
+
+        <div class="endcard" id="endcard" role="status" aria-live="polite">
+          <div class="end-title" id="endTitle">¡Juego finalizado!</div>
+          <div class="end-score" id="endScore"></div>
+          <div class="final-actions">
+            <button id="reviewBtn" style="display:none;">Revisar respuestas</button>
+            <button id="restartBtn" style="display:none;">Jugar de nuevo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review" id="review">
+      <div class="review-grid" id="reviewGrid">
+        <div class="review-header">Letra</div>
+        <div class="review-header">Instrucción</div>
+        <div class="review-header">Definición</div>
+        <div class="review-header">Respuesta dada</div>
+      </div>
+      <div class="legend">
+        <span class="l-correct">Acierto</span>
+        <span class="l-incorrect">Error</span>
+        <span class="l-skipped">Pasapalabra</span>
+        <span class="l-neutral">Sin responder</span>
+      </div>
+    </div>
+  </div>
+
+<script>
+// === Configuración de imágenes por letra ===
+const IMAGE_BASE = 'images/';
+const IMAGE_EXTS = ['.png', '.jpg', '.jpeg', '.webp']; // probar en este orden
+const FALLBACK_IMG = 'images/neurona.png';
+
+// === Datos del rosco (desde CSV, sin K) ===
+const QUESTIONS = [{"letra": "A", "instruccion": "EMPIEZA POR", "pregunta": "Parte de una célula nerviosa.", "respuesta": "AXÓN"}, {"letra": "B", "instruccion": "CONTIENE LA", "pregunta": "Órgano que regula todas las funciones corporales.", "respuesta": "CEREBRO"}, {"letra": "C", "instruccion": "EMPIEZA POR", "pregunta": "Estructura ósea que protege la médula espinal.", "respuesta": "COLUMNA VERTEBRAL"}, {"letra": "D", "instruccion": "EMPIEZA POR", "pregunta": "Dificultad para hablar tras un daño cerebral.", "respuesta": "DISARTRIA"}, {"letra": "E", "instruccion": "CONTIENE LA", "pregunta": "Capacidad del cerebro para adaptarse y cambiar.", "respuesta": "NEUROPLASTICIDAD"}, {"letra": "F", "instruccion": "EMPIEZA POR", "pregunta": "Profesión que ayuda a recuperar el movimiento tras una lesión.", "respuesta": "FISIOTERAPIA"}, {"letra": "G", "instruccion": "EMPIEZA POR", "pregunta": "Células del cerebro que dan soporte a las neuronas.", "respuesta": "GLÍA"}, {"letra": "H", "instruccion": "EMPIEZA POR", "pregunta": "Parte del cerebro donde se guarda la memoria.", "respuesta": "HIPOCAMPO"}, {"letra": "I", "instruccion": "EMPIEZA POR", "pregunta": "Actividad para conocer cómo funciona el cerebro.", "respuesta": "INVESTIGACIÓN"}, {"letra": "J", "instruccion": "EMPIEZA POR", "pregunta": "Acción de moverse de forma alegre y divertida, útil en terapia.", "respuesta": "JUGAR"}, {"letra": "L", "instruccion": "EMPIEZA POR", "pregunta": "Parte del cuerpo en la que se localizan los receptores del gusto.", "respuesta": "LENGUA"}, {"letra": "M", "instruccion": "EMPIEZA POR", "pregunta": "Parte invisible de ti que piensa, imagina y siente.", "respuesta": "MENTE"}, {"letra": "N", "instruccion": "EMPIEZA POR", "pregunta": "Ciencia que estudia el cerebro y el sistema nervioso.", "respuesta": "NEUROCIENCIA"}, {"letra": "O", "instruccion": "EMPIEZA POR", "pregunta": "Sentido que nos permite escuchar lo que ocurre a nuestro alrededor.", "respuesta": "OÍDO"}, {"letra": "P", "instruccion": "EMPIEZA POR", "pregunta": "Parte del cerebro que piensa y toma decisiones.", "respuesta": "PREFRONTAL"}, {"letra": "Q", "instruccion": "CONTIENE LA", "pregunta": "Ciencia que estudia los procesos químicos del sistema nervioso.", "respuesta": "NEUROQUÍMICA"}, {"letra": "R", "instruccion": "EMPIEZA POR", "pregunta": "Proceso que ayuda a recuperar habilidades después de una lesión o enfermedad.", "respuesta": "REHABILITACIÓN"}, {"letra": "S", "instruccion": "EMPIEZA POR", "pregunta": "Conjunto de cerebro, médula y nervios.", "respuesta": "SISTEMA NERVIOSO"}, {"letra": "T", "instruccion": "EMPIEZA POR", "pregunta": "Persona que enseña a recuperar la autonomía para vestirse, comer o jugar después de una lesión.", "respuesta": "TERAPEUTA OCUPACIONAL"}, {"letra": "U", "instruccion": "CONTIENE LA", "pregunta": "Célula principal del sistema nervioso.", "respuesta": "NEURONA"}, {"letra": "V", "instruccion": "EMPIEZA POR", "pregunta": "Sentido que usamos para descubrir colores, formas y luces.", "respuesta": "VISTA"}, {"letra": "W", "instruccion": "EMPIEZA POR", "pregunta": "Consola de videojuegos con la que ayudar a mejorar el movimiento.", "respuesta": "WII"}, {"letra": "X", "instruccion": "CONTIENE LA", "pregunta": "Gas que necesita el cerebro para funcionar bien.", "respuesta": "OXÍGENO"}, {"letra": "Y", "instruccion": "CONTIENE LA", "pregunta": "Imagen que se toma para ver los huesos dentro del cuerpo.", "respuesta": "RAYOS X"}, {"letra": "Z", "instruccion": "EMPIEZA POR", "pregunta": "Estado en el que el cuerpo y el cerebro descansan.", "respuesta": "ZUEÑO (ADAPTABLE A \"SUEÑO\")"}];
+
+// === Utilidades de normalización ===
+function normalizeStr(s) {
+  return s
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[¡!¿?.,;:()\[\]{}"']/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+// === Estado del juego ===
+let letters = [];
+let state = QUESTIONS.map(q => ({ status:'neutral', userAnswer:'', ...q }));
+let activeIndex = 0;
+let score = 0;
+let totalAnswered = 0;
+let timerId = null;
+let remaining = 5 * 60;
+let finished = false;
+
+// === Referencias DOM ===
+const roscoEl = document.getElementById('rosco');
+const bigLetterEl = document.getElementById('bigLetter');
+const instructionEl = document.getElementById('instruction');
+const definitionEl = document.getElementById('definition');
+const inputEl = document.getElementById('answerInput');
+const submitBtn = document.getElementById('submitBtn');
+const passBtn = document.getElementById('passBtn');
+const scoreEl = document.getElementById('score');
+const timerEl = document.getElementById('timer');
+const endcardEl = document.getElementById('endcard');
+const endTitleEl = document.getElementById('endTitle');
+const endScoreEl = document.getElementById('endScore');
+const reviewBtn = document.getElementById('reviewBtn');
+const restartBtn = document.getElementById('restartBtn');
+const reviewEl = document.getElementById('review');
+const reviewGridEl = document.getElementById('reviewGrid');
+const letterImgEl = document.getElementById('letterImg');
+
+// === Construir rosco circular ===
+function buildRosco() {
+  const N = state.length;
+  const rOuter = 190;
+  const cx = 210, cy = 210;
+  for (let i=0; i<N; i++) {
+    const angle = (i / N) * 2 * Math.PI - Math.PI / 2;
+    const x = cx + rOuter * Math.cos(angle);
+    const y = cy + rOuter * Math.sin(angle);
+
+    const d = document.createElement('div');
+    d.className = 'letter neutral';
+    d.textContent = state[i].letra;
+    d.style.left = (x - 23) + 'px';
+    d.style.top  = (y - 23) + 'px';
+    roscoEl.appendChild(d);
+    letters.push(d);
+  }
+}
+
+// === Preparar lista de candidatos de imagen para una letra ===
+function buildImageCandidates(letter) {
+  const l = letter.toLowerCase();
+  const variants = [l];
+  // Soporte para Ñ: probar 'ñ' y, si falla, 'n'
+  if (l === 'ñ') variants.push('n');
+
+  const list = [];
+  for (const v of variants) {
+    for (const ext of IMAGE_EXTS) {
+      list.push(IMAGE_BASE + v + ext);
+    }
+  }
+  // Añadimos la de respaldo al final (no se probará por onerror, la ponemos directamente si todo falla)
+  return list;
+}
+
+// === Fijar imagen por letra con degradación elegante ===
+function setLetterImage(letter) {
+  const candidates = buildImageCandidates(letter);
+  let idx = 0;
+
+  function tryNext() {
+    if (idx >= candidates.length) {
+      letterImgEl.src = FALLBACK_IMG;
+      letterImgEl.onerror = null;
+      return;
+    }
+    letterImgEl.onerror = () => { idx++; tryNext(); };
+    letterImgEl.src = candidates[idx];
+  }
+
+  tryNext();
+}
+
+// === Refrescar panel del ítem activo ===
+function showActive(index) {
+  activeIndex = index;
+  state.forEach((s, i) => letters[i].classList.toggle('active', i === activeIndex));
+  const q = state[activeIndex];
+  bigLetterEl.textContent = q.letra;
+  instructionEl.textContent = q.instruccion.toUpperCase();
+  definitionEl.textContent = q.pregunta;
+  inputEl.value = '';
+  inputEl.focus();
+  setLetterImage(q.letra);
+}
+
+// === Buscar siguiente índice no resuelto ===
+function nextUnresolved(from) {
+  const N = state.length;
+  for (let step=1; step<=N; step++) {
+    const i = (from + step) % N;
+    if (state[i].status === 'neutral' || state[i].status === 'skipped') return i;
+  }
+  return -1;
+}
+
+// === Marcar estado ===
+function setStatus(i, status) {
+  state[i].status = status;
+  letters[i].classList.remove('neutral','correct','incorrect','skipped');
+  letters[i].classList.add(status);
+}
+
+// === Validar respuesta ===
+function submitAnswer() {
+  if (finished) return;
+  const q = state[activeIndex];
+  const user = inputEl.value.trim();
+  q.userAnswer = user;
+  const ok = normalizeStr(user) === normalizeStr(q.respuesta);
+  if (ok) { setStatus(activeIndex, 'correct'); score += 10; }
+  else    { setStatus(activeIndex, 'incorrect'); score -= 5; }
+  scoreEl.textContent = score;
+  totalAnswered += 1;
+  advance();
+}
+
+// === Pasapalabra ===
+function skipCurrent() {
+  if (finished) return;
+  const q = state[activeIndex];
+  if (q.status !== 'skipped') setStatus(activeIndex, 'skipped');
+  advance();
+}
+
+// === Avanzar o terminar ===
+function advance() {
+  const next = nextUnresolved(activeIndex);
+  if (next === -1) { finishGame('¡Rosco completado!'); }
+  else { showActive(next); }
+}
+
+// === Temporizador ===
+function fmt(seconds) {
+  const m = Math.floor(seconds / 60).toString().padStart(2,'0');
+  const s = (seconds % 60).toString().padStart(2,'0');
+  return m + ':' + s;
+}
+function startTimer() {
+  timerEl.textContent = fmt(remaining);
+  timerId = setInterval(() => {
+    remaining -= 1;
+    if (remaining <= 0) {
+      remaining = 0;
+      timerEl.textContent = fmt(remaining);
+      clearInterval(timerId);
+      finishGame('Tiempo agotado');
+    } else {
+      timerEl.textContent = fmt(remaining);
+    }
+  }, 1000);
+}
+
+// === Finalizar ===
+function finishGame(title) {
+  finished = true;
+  clearInterval(timerId);
+  endTitleEl.textContent = title;
+  const bonus = Math.floor(remaining / 15);
+  const total = score + bonus;
+  endScoreEl.textContent = `Puntuación final: ${total} (incluye bonus por tiempo: +${bonus})`;
+  endcardEl.classList.add('visible');
+  reviewBtn.style.display = 'inline-block';
+  restartBtn.style.display = 'inline-block';
+  buildReview();
+}
+
+// === Revisión ===
+function buildReview() {
+  const nodes = Array.from(reviewGridEl.querySelectorAll('.review-item'));
+  nodes.forEach(n => n.remove());
+
+  state.forEach(q => {
+    const cellLetter = document.createElement('div');
+    cellLetter.className = 'review-item ' + q.status;
+    cellLetter.textContent = q.letra;
+    reviewGridEl.appendChild(cellLetter);
+
+    const cellInstr = document.createElement('div');
+    cellInstr.className = 'review-item ' + q.status;
+    cellInstr.textContent = q.instruccion.toUpperCase();
+    reviewGridEl.appendChild(cellInstr);
+
+    const cellDef = document.createElement('div');
+    cellDef.className = 'review-item ' + q.status;
+    cellDef.textContent = q.pregunta;
+    reviewGridEl.appendChild(cellDef);
+
+    const cellAns = document.createElement('div');
+    cellAns.className = 'review-item ' + q.status;
+    cellAns.textContent = q.userAnswer ? q.userAnswer : '—';
+    reviewGridEl.appendChild(cellAns);
+  });
+}
+
+// === Eventos ===
+submitBtn.addEventListener('click', submitAnswer);
+passBtn.addEventListener('click', skipCurrent);
+inputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (inputEl.value.trim() === '') skipCurrent();
+    else submitAnswer();
+  }
+});
+reviewBtn.addEventListener('click', () => {
+  reviewEl.classList.toggle('visible');
+  reviewBtn.textContent = reviewEl.classList.contains('visible') ? 'Ocultar revisión' : 'Revisar respuestas';
+});
+restartBtn.addEventListener('click', () => window.location.reload());
+
+// === Init ===
+buildRosco();
+showActive(0);
+startTimer();
+</script>
+</body>
+</html>
