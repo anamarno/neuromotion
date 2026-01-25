@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respiración Pro - Entrenamiento Completo</title>
+    <style>
+        :root { --accent: #00ff00; --bg: #000; --panel: #111; --text: #eee; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            min-height: 100vh;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+.brand-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.logo {
+    height: 60px; /* Ajusta el tamaño según tu logo */
+    width: auto;
+    filter: drop-shadow(0 0 5px var(--accent)); /* Le da un brillo verde al logo */
+}
+
+.creator {
+    font-size: 0.9rem;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+.creator strong {
+    color: var(--text);
+    font-weight: 500;
+}
+
+/* Ajuste opcional para móviles */
+@media (max-width: 480px) {
+    .logo { height: 45px; }
+    .creator { font-size: 0.75rem; }
+}
+        .container {
+            width: 95%;
+            max-width: 850px;
+            text-align: center;
+            background: var(--panel);
+            padding: 25px;
+            border-radius: 24px;
+            border: 1px solid #333;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
+
+        /* Cabecera y Stats */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #000;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .stat-item { display: flex; flex-direction: column; }
+        .label { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .value { font-size: 1.4rem; font-weight: bold; color: var(--accent); }
+
+        /* Selectores */
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .mode-selector, .goal-selector {
+            display: flex;
+            gap: 5px;
+            background: #222;
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: #888;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn.active { background: #444; color: var(--accent); }
+
+        /* Canvas */
+        canvas {
+            background: #050505;
+            border-radius: 16px;
+            width: 100%;
+            height: auto;
+            border: 1px solid #222;
+        }
+
+        .status {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 15px 0;
+            min-height: 60px;
+            letter-spacing: -1px;
+        }
+
+        /* Controles Deslizantes */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            text-align: left;
+            margin-top: 20px;
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .control-group { display: flex; flex-direction: column; }
+        .control-group label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #aaa; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; }
+
+        .btn-reset {
+            margin-top: 20px;
+            background: #300;
+            color: #f55;
+            border: 1px solid #500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+<div class="brand-header">
+    <img src="https://lh3.googleusercontent.com/d/1K1VBT4_Bqpb5OV0XJKCpx6tukX6y1KGb" alt="Logo Equipo" class="logo">
+    <span class="creator">Creado por: <strong>Ana M. Martín-Nogueras</strong></span>
+</div>
+
+<div id="finishOverlay" class="overlay">
+    <h1 style="color: var(--accent);">¡Sesión Completada!</h1>
+    <p id="totalStats"></p>
+    <button class="btn active" style="padding: 15px 30px; font-size: 1.2rem;" onclick="closeOverlay()">VOLVER A ENTRENAR</button>
+</div>
+
+<div class="container">
+    <div class="settings-row">
+        <div class="mode-selector">
+            <button class="btn active" onclick="setMode('wave', this)">ONDA</button>
+            <button class="btn" onclick="setMode('square', this)">RECTÁNGULO</button>
+            <button class="btn" onclick="setMode('circle', this)">CÍRCULO</button>
+        </div>
+        <div class="goal-selector">
+            <span style="font-size: 0.7rem; align-self: center; margin-right: 5px; color: #666;">OBJETIVO:</span>
+            <button class="btn" onclick="setGoal(1, this)">1m</button>
+            <button class="btn active" onclick="setGoal(3, this)">3m</button>
+            <button class="btn" onclick="setGoal(5, this)">5m</button>
+            <button class="btn" onclick="setGoal(0, this)">∞</button>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="label">Restante</span>
+            <span id="timeLeft" class="value">03:00</span>
+        </div>
+        <div class="stat-item">
+            <span class="label">Ciclos</span>
+            <span id="cycleCount" class="value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="label">Transcurrido</span>
+            <span id="sessionTime" class="value">00:00</span>
+        </div>
+    </div>
+
+    <div id="status" class="status">toma aire</div>
+    
+    <canvas id="breathCanvas" width="800" height="400"></canvas>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>toma aire <span class="val" id="inhaleVal">4s</span></label>
+            <input type="range" id="inhale" min="1" max="15" value="4">
+        </div>
+        <div class="control-group">
+            <label>Mantén <span class="val" id="holdFullVal">2s</span></label>
+            <input type="range" id="holdFull" min="0" max="15" value="2">
+        </div>
+        <div class="control-group">
+            <label>Echa el aire <span class="val" id="exhaleVal">4s</span></label>
+            <input type="range" id="exhale" min="1" max="15" value="4">
+        </div>
+        <div class="control-group">
+            <label>Mantén <span class="val" id="holdEmptyVal">2s</span></label>
+            <input type="range" id="holdEmpty" min="0" max="15" value="2">
+        </div>
+    </div>
+    
+    <button class="btn-reset" onclick="resetAll()">REINICIAR TODO</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('breathCanvas');
+    const ctx = canvas.getContext('2d');
+    const statusText = document.getElementById('status');
+    const cycleText = document.getElementById('cycleCount');
+    const sessionText = document.getElementById('sessionTime');
+    const timeLeftText = document.getElementById('timeLeft');
+
+    let times = { inhale: 4, holdFull: 2, exhale: 4, holdEmpty: 2 };
+    let cycles = 0;
+    let mode = 'wave';
+    let goalMinutes = 3;
+    let hasCounted = false;
+    let isFinished = false;
+    let startTime = Date.now();
+    let sessionStart = Date.now();
+
+    // Audio Context para el sonido final
+    function playFinishSound() {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); // Nota LA
+        oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.5);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 1);
+    }
+
+    function setMode(m, btn) {
+        mode = m;
+        document.querySelectorAll('.mode-selector .btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function setGoal(min, btn) {
+        goalMinutes = min;
+        document.querySelectorAll('.goal-selector .btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        resetAll();
+    }
+
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', (e) => {
+            times[e.target.id] = parseInt(e.target.value);
+            document.getElementById(e.target.id + 'Val').innerText = e.target.value + 's';
+        });
+    });
+
+    function resetAll() {
+        cycles = 0; cycleText.innerText = 0;
+        startTime = Date.now(); sessionStart = Date.now();
+        isFinished = false;
+        document.getElementById('finishOverlay').style.display = 'none';
+    }
+
+    function closeOverlay() { resetAll(); }
+
+    function updateTimers() {
+        if (isFinished) return;
+        const now = Date.now();
+        const diff = Math.floor((now - sessionStart) / 1000);
+        
+        // Transcurrido
+        sessionText.innerText = `${String(Math.floor(diff/60)).padStart(2,'0')}:${String(diff%60).padStart(2,'0')}`;
+
+        // Restante
+        if (goalMinutes > 0) {
+            const totalSeconds = goalMinutes * 60;
+            const remaining = totalSeconds - diff;
+            if (remaining <= 0) {
+                timeLeftText.innerText = "00:00";
+                finishSession();
+            } else {
+                timeLeftText.innerText = `${String(Math.floor(remaining/60)).padStart(2,'0')}:${String(remaining%60).padStart(2,'0')}`;
+            }
+        } else {
+            timeLeftText.innerText = "∞";
+        }
+    }
+
+    function finishSession() {
+        isFinished = true;
+        playFinishSound();
+        document.getElementById('totalStats').innerText = `Has completado ${cycles} ciclos en ${goalMinutes} minuto(s).`;
+        document.getElementById('finishOverlay').style.display = 'flex';
+    }
+
+    function draw() {
+        if (isFinished) { requestAnimationFrame(draw); return; }
+        
+        updateTimers();
+        const total = times.inhale + times.holdFull + times.exhale + times.holdEmpty;
+        const elapsed = ((Date.now() - startTime) / 1000) % total;
+        let phase = ""; let progress = 0; let color = "";
+
+        if (elapsed < times.inhale) {
+            phase = "toma aire"; progress = elapsed / times.inhale; color = "#00f2ff"; hasCounted = false;
+        } else if (elapsed < times.inhale + times.holdFull) {
+            phase = "mantén"; progress = (elapsed - times.inhale) / times.holdFull; color = "#ffff00";
+        } else if (elapsed < times.inhale + times.holdFull + times.exhale) {
+            phase = "echa el aire"; progress = (elapsed - (times.inhale + times.holdFull)) / times.exhale; color = "#ff3300";
+        } else {
+            phase = "mantén"; progress = (elapsed - (times.inhale + times.holdFull + times.exhale)) / times.holdEmpty; color = "#9d00ff";
+            if (!hasCounted) { cycles++; cycleText.innerText = cycles; hasCounted = true; }
+        }
+
+        statusText.innerText = phase;
+        statusText.style.color = color;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const cx = canvas.width / 2; const cy = canvas.height / 2;
+
+        if (mode === 'wave') {
+            const margin = 80; const w = canvas.width - (margin * 2);
+            const h = 180; const base = cy + 90; const top = cy - 90;
+            const p1 = margin + (times.inhale / total) * w;
+            const p2 = p1 + (times.holdFull / total) * w;
+            const p3 = p2 + (times.exhale / total) * w;
+            
+            ctx.beginPath(); ctx.strokeStyle = "#222"; ctx.lineWidth = 12; ctx.lineJoin = "round";
+            ctx.moveTo(margin, base); ctx.lineTo(p1, top); ctx.lineTo(p2, top); ctx.lineTo(p3, base); ctx.lineTo(w + margin, base); ctx.stroke();
+
+            let bx, by, bs;
+            if (elapsed < times.inhale) { bx = margin + progress*(p1-margin); by = base - progress*h; bs = 10+progress*25; }
+            else if (elapsed < times.inhale+times.holdFull) { bx = p1 + progress*(p2-p1); by = top; bs = 35; }
+            else if (elapsed < times.inhale+times.holdFull+times.exhale) { bx = p2 + progress*(p3-p2); by = top + progress*h; bs = 35-progress*25; }
+            else { bx = p3 + progress*(w+margin-p3); by = base; bs = 10; }
+            drawBall(bx, by, bs, color);
+
+        } else if (mode === 'square') {
+            // Cuadrilátero Proporcional: Se ajusta visualmente a los tiempos
+            const factor = 25;
+            const rectW = Math.max(times.holdFull, times.holdEmpty) * factor + 120;
+            const rectH = Math.max(times.inhale, times.exhale) * factor + 120;
+            const x = cx - rectW/2; const y = cy - rectH/2;
+
+            ctx.strokeStyle = "#222"; ctx.lineWidth = 12; ctx.lineJoin = "round";
+            ctx.strokeRect(x, y, rectW, rectH);
+            
+            let bx, by;
+            if (elapsed < times.inhale) { bx = x; by = (y + rectH) - progress * rectH; }
+            else if (elapsed < times.inhale + times.holdFull) { by = y; bx = x + progress * rectW; }
+            else if (elapsed < times.inhale + times.holdFull + times.exhale) { bx = x + rectW; by = y + progress * rectH; }
+            else { by = y + rectH; bx = (x + rectW) - progress * rectW; }
+            drawBall(bx, by, 22, color);
+
+        } else if (mode === 'circle') {
+            let r = (phase === "toma aire") ? 40 + progress * 130 : 
+                    (elapsed < times.inhale + times.holdFull) ? 170 :
+                    (elapsed < times.inhale + times.holdFull + times.exhale) ? 170 - progress * 130 : 40;
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fillStyle = color; ctx.globalAlpha = 0.15; ctx.fill();
+            ctx.globalAlpha = 1; ctx.strokeStyle = color; ctx.lineWidth = 15; ctx.stroke();
+            ctx.shadowBlur = 40; ctx.shadowColor = color; ctx.stroke(); ctx.shadowBlur = 0;
+        }
+        requestAnimationFrame(draw);
+    }
+
+    function drawBall(x, y, r, c) {
+        ctx.shadowBlur = 30; ctx.shadowColor = c;
+        ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = "white"; ctx.lineWidth = 4; ctx.stroke();
+        ctx.shadowBlur = 0;
+    }
+    draw();
+</script>
+</body>
+</html>
