@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Corteza Prefrontal - Neuromotion USAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --highlight-yellow: #FFD700;
+            --text-main: #1a1a1a;
+            --bg-accessible: #ffffff;
+            --stroop-red: #e11d48;
+            --stroop-blue: #2563eb;
+            --stroop-green: #16a34a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background-color: var(--bg-accessible);
+            font-size: 1.15rem;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-blue);
+            font-weight: 800;
+        }
+
+        .audio-button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: 4px solid var(--highlight-yellow);
+            transition: all 0.2s;
+        }
+
+        .content-card {
+            border-left: 8px solid var(--primary-blue);
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 1rem 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .highlight-box {
+            background-color: #fffbeb;
+            border: 2px solid var(--highlight-yellow);
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+
+        /* Estilos del Juego Stroop */
+        #stroop-container {
+            border: 4px dashed var(--primary-blue);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            background-color: white;
+            text-align: center;
+        }
+
+        #stroop-word {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 1rem 0;
+            min-height: 6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        .color-btn {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+
+        .btn-red { background-color: var(--stroop-red); color: white; }
+        .btn-blue { background-color: var(--stroop-blue); color: white; }
+        .btn-green { background-color: var(--stroop-green); color: white; }
+
+        /* Simulador Doble Tarea */
+        .slider-neuro {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 12px;
+            border-radius: 10px;
+            background: #cbd5e1;
+            outline: none;
+        }
+        .slider-neuro::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            border: 3px solid var(--highlight-yellow);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 max-w-5xl mx-auto">
+
+    <!-- BARRA DE ACCESIBILIDAD -->
+    <nav class="mb-8 sticky top-0 bg-white/90 backdrop-blur-sm py-4 border-b-2 border-gray-100 z-50 flex flex-col gap-2">
+        <button id="btn-audio" class="audio-button px-6 py-3 rounded-full flex items-center gap-3 w-full md:w-auto justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform">
+            <span aria-hidden="true">🔊</span> 
+            <span>ESCUCHAR EXPLICACIÓN</span>
+        </button>
+        <p id="audio-status" class="text-xs font-semibold italic text-blue-900 text-center md:text-left" aria-live="polite"></p>
+    </nav>
+
+    <header class="mb-12">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-blue-900 rounded-lg flex items-center justify-center text-white text-3xl font-bold shadow-md">CPF</div>
+            <div>
+                <p class="text-blue-800 font-bold uppercase tracking-widest text-sm">Neuromotion-USAL | Estación 3</p>
+                <h1 class="text-4xl md:text-5xl">La Corteza Prefrontal</h1>
+            </div>
+        </div>
+        <p class="text-2xl text-gray-700 italic border-l-8 border-yellow-400 pl-6 py-2">
+            "Soy tu estratega. Convierto tus ganas y tus intenciones en una realidad organizada."
+        </p>
+    </header>
+
+    <main id="main-content">
+        
+        <!-- SECCIÓN 1: ¿QUIÉN SOY? (Basado en documentos) -->
+        <section class="mb-16 grid md:grid-cols-3 gap-8">
+            <div class="md:col-span-2">
+                <h2 class="text-3xl mb-4">¿Por dónde paro y qué hago?</h2>
+                <div class="content-card">
+                    <p>Estoy justo detrás de tu frente. Soy lo último que madura en el cerebro humano (¡alrededor de los 30 años!). No soy un bloque único, sino un <strong>director de orquesta</strong> que coordina tres secciones clave:</p>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-4 text-sm">
+                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                        <strong class="block text-blue-900 mb-1">Dorsolateral</strong>
+                        El "cerebrito" de los datos. Gestiona la memoria de trabajo y la planificación.
+                    </div>
+                    <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                        <strong class="block text-amber-900 mb-1">Orbitofrontal</strong>
+                        El "filtro" social. Te ayuda a no decir lo primero que piensas y a evaluar riesgos.
+                    </div>
+                    <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                        <strong class="block text-emerald-900 mb-1">Ventromedial</strong>
+                        El "termómetro" interno. Conecta tus emociones con tus decisiones.
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col justify-center">
+                <div class="bg-gray-200 aspect-square rounded-full flex items-center justify-center border-4 border-blue-900 shadow-inner overflow-hidden">
+                   <!-- Placeholder para imagen de localización prefrontal -->
+                   <span class="text-center p-4 text-gray-500 italic text-sm">[Imagen de Localización de la Corteza Prefrontal en el cerebro humano]</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVIDAD 1: SIMULADOR DE CARGA (DOBLE TAREA) -->
+        <section class="mb-16 bg-blue-900 text-white p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-3xl mb-4 text-yellow-400 text-center">Simulador: El Límite del Estratega</h2>
+                <p class="text-center mb-8 text-blue-100 max-w-2xl mx-auto">
+                    Cuando te rehabilitas, "hacer dos cosas a la vez" es el examen final. Si el estratega se satura, el cuerpo falla.
+                </p>
+                
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+                    <div class="space-y-8 bg-blue-800/50 p-6 rounded-2xl">
+                        <div>
+                            <label class="block font-bold mb-2 flex justify-between">
+                                <span>🚶 Tarea Motora (Caminar)</span>
+                                <span id="m-val" class="text-yellow-400">15%</span>
+                            </label>
+                            <input type="range" id="motor-slider" class="slider-neuro" min="0" max="100" value="15">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-2 flex justify-between">
+                                <span>🗣️ Tarea Cognitiva (Conversar)</span>
+                                <span id="c-val" class="text-yellow-400">15%</span>
+                            </label>
+                            <input type="range" id="cogni-slider" class="slider-neuro" min="0" max="100" value="15">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-28 h-56 bg-blue-950 rounded-3xl overflow-hidden border-4 border-blue-700 shadow-2xl">
+                            <div id="load-bg" class="absolute bottom-0 w-full transition-all duration-500 ease-out" style="height: 30%; background: linear-gradient(to top, #10b981, #fbbf24);"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="total-val" class="text-5xl font-black">30%</span>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-xs uppercase tracking-widest text-blue-300">Carga del Prefrontal</p>
+                    </div>
+                </div>
+
+                <div id="sim-feedback" class="mt-8 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-center text-lg italic">
+                    <!-- Feedback dinámico -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVIDAD 2: STROOP -->
+        <section class="mb-16">
+            <div class="flex items-center gap-4 mb-6">
+                <h2 class="text-3xl">🎮 Reto: El Filtro de Impulsos</h2>
+                <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Test de Stroop</span>
+            </div>
+            
+            <div id="stroop-container" class="shadow-lg">
+                <p class="text-gray-500 font-bold uppercase text-sm tracking-widest mb-2">Ignora la palabra, pulsa el color de la tinta</p>
+                <div id="stroop-word">PULSA INICIAR</div>
+                
+                <div id="game-controls" class="mt-4">
+                    <button id="start-game" class="bg-blue-900 text-white px-10 py-5 rounded-2xl font-bold text-2xl hover:bg-blue-800 shadow-xl transition-all">
+                        PROBAR MI CONTROL
+                    </button>
+                </div>
+
+                <div id="color-options" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <button class="color-btn btn-red text-xl py-6 shadow-lg hover:scale-105" data-color="red">ROJO</button>
+                    <button class="color-btn btn-blue text-xl py-6 shadow-lg hover:scale-105" data-color="blue">AZUL</button>
+                    <button class="color-btn btn-green text-xl py-6 shadow-lg hover:scale-105" data-color="green">VERDE</button>
+                </div>
+
+                <div id="feedback" class="mt-6 text-2xl font-black min-h-[2rem]" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: CUANDO FALLO (Perspectiva Clínica) -->
+        <section class="mb-16">
+            <h2 class="text-3xl mb-8">¿Qué pasa si mi "estratega" se lesiona?</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="highlight-box">
+                    <h3 class="text-xl mb-4 flex items-center gap-2">
+                        <span>⚠️</span> Consecuencias Invisibles
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <span class="font-bold text-red-600">Apatía:</span>
+                            <span>Falta de iniciativa. No es pereza, es dificultad para arrancar el motor de la acción.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="font-bold text-red-600">Impulsividad:</span>
+                            <span>Hacer las cosas sin medir el riesgo o el contexto social.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="font-bold text-red-600">Perseveración:</span>
+                            <span>Quedarse "atrapado" repitiendo una acción aunque ya no sirva para nada.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-3xl border-2 border-gray-100 flex flex-col justify-center">
+                    <h3 class="text-xl mb-2">La Pregunta Activadora</h3>
+                    <p class="text-2xl font-medium text-blue-800 mb-4">¿Alguna vez te has quedado bloqueado al intentar hacer dos cosas a la vez mientras caminas?</p>
+                    <p class="text-sm text-gray-600">Eso que sientes es tu corteza prefrontal intentando priorizar. Tras una lesión, este "bloqueo" ocurre mucho antes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: EQUIPO MULTIDISCIPLINAR -->
+        <section class="mb-12 bg-white border-4 border-blue-900 p-8 rounded-3xl shadow-xl">
+            <h2 class="text-3xl mb-6 text-center">¿Quién te ayuda en Neuromotion-USAL?</h2>
+            <p class="mb-8 text-center text-lg">Rehabilitar el movimiento es mucho más que mover un músculo; es reentrenar la capacidad de decidir y participar.</p>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center p-4">
+                    <div class="text-4xl mb-2">🏃‍♂️</div>
+                    <h4 class="font-bold">Fisioterapia</h4>
+                    <p class="text-sm">Diseña retos motores que obligan al cerebro a buscar nuevos caminos para organizarse.</p>
+                </div>
+                <div class="text-center p-4">
+                    <div class="text-4xl mb-2">🧶</div>
+                    <h4 class="font-bold">Terapia Ocupacional</h4>
+                    <p class="text-sm">Entrena la planificación de actividades de la vida diaria para recuperar la autonomía real.</p>
+                </div>
+                <div class="text-center p-4">
+                    <div class="text-4xl mb-2">🗣️</div>
+                    <h4 class="font-bold">Logopedia y Neuropsicología</h4>
+                    <p class="text-sm">Trabajan las funciones ejecutivas y el lenguaje, piezas clave de nuestra identidad.</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-200 text-center">
+                <p class="text-xl font-bold text-blue-900 italic">"Arreglamos al director de orquesta para que todos los músicos (los músculos) vuelvan a sonar bien."</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 text-center text-gray-500 border-t pt-12 pb-8">
+        <div class="flex justify-center gap-8 mb-4">
+            <span class="font-bold text-blue-900">USAL</span>
+            <span class="font-bold text-blue-900">IBSAL</span>
+            <span class="font-bold text-blue-900">NEUROUSAL</span>
+        </div>
+        <p class="text-sm">Este contenido forma parte del proyecto de divulgación científica del Equipo NeuroUsal.</p>
+        <p class="text-xs mt-2 italic">Basado en evidencia científica actualizada 2026.</p>
+    </footer>
+
+    <script>
+        // LÓGICA DE AUDIO (Lectura Progresiva)
+        const btnAudio = document.getElementById('btn-audio');
+        const audioStatus = document.getElementById('audio-status');
+        let synth = window.speechSynthesis;
+        let isReading = false;
+
+        btnAudio.addEventListener('click', () => {
+            if (isReading) {
+                synth.cancel();
+                isReading = false;
+                btnAudio.innerHTML = '<span>🔊</span> <span>ESCUCHAR EXPLICACIÓN</span>';
+                audioStatus.textContent = "";
+            } else {
+                const sections = [
+                    "La Corteza Prefrontal. Soy tu estratega. Convierto tus ganas y tus intenciones en una realidad organizada.",
+                    "¿Quién soy? Soy el director de orquesta de tu cerebro. Me divido en tres áreas: la dorsolateral que es mi cerebrito de datos, la orbitofrontal que es mi filtro social, y la ventromedial que es mi termómetro de emociones.",
+                    "En rehabilitación, no solo entrenamos músculos. Entrenamos la capacidad de decidir y planificar. Si el estratega falla, el movimiento pierde su sentido."
+                ];
+                
+                const utterance = new SpeechSynthesisUtterance(sections.join(" "));
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                
+                utterance.onstart = () => {
+                    isReading = true;
+                    btnAudio.innerHTML = '<span>⏹️</span> <span>DETENER</span>';
+                    audioStatus.textContent = "Reproduciendo guía auditiva...";
+                };
+                utterance.onend = () => {
+                    isReading = false;
+                    btnAudio.innerHTML = '<span>🔊</span> <span>ESCUCHAR EXPLICACIÓN</span>';
+                    audioStatus.textContent = "";
+                };
+                synth.speak(utterance);
+            }
+        });
+
+        // LÓGICA SIMULADOR DOBLE TAREA
+        const mS = document.getElementById('motor-slider');
+        const cS = document.getElementById('cogni-slider');
+        const loadBg = document.getElementById('load-bg');
+        const totalV = document.getElementById('total-val');
+        const simFeedback = document.getElementById('sim-feedback');
+
+        function updateSim() {
+            const m = parseInt(mS.value);
+            const c = parseInt(cS.value);
+            const total = m + c;
+
+            document.getElementById('m-val').innerText = m + '%';
+            document.getElementById('c-val').innerText = c + '%';
+            totalV.innerText = total + '%';
+            
+            loadBg.style.height = (total > 100 ? 100 : total) + '%';
+
+            if(total < 40) {
+                simFeedback.innerHTML = `<span class="text-emerald-300 font-bold">SEGURIDAD:</span> El estratega tiene control total. Puedes caminar y hablar con fluidez.`;
+                loadBg.style.background = "#10b981";
+            } else if(total <= 90) {
+                simFeedback.innerHTML = `<span class="text-yellow-400 font-bold">ALERTA:</span> Competición de recursos. Tu paso se vuelve más lento o cometes errores al hablar. ¡Cuidado!`;
+                loadBg.style.background = "#f59e0b";
+            } else {
+                simFeedback.innerHTML = `<span class="text-red-500 font-bold">BLOQUEO:</span> El prefrontal se desborda. Riesgo inminente de caída o parálisis en la conversación.`;
+                loadBg.style.background = "#ef4444";
+            }
+        }
+
+        mS.oninput = updateSim;
+        cS.oninput = updateSim;
+        updateSim();
+
+        // LÓGICA STROOP
+        const stroopWord = document.getElementById('stroop-word');
+        const startBtn = document.getElementById('start-game');
+        const colorOptions = document.getElementById('color-options');
+        const feedback = document.getElementById('feedback');
+        
+        const colors = [
+            { name: 'ROJO', value: 'red', hex: '#e11d48' },
+            { name: 'AZUL', value: 'blue', hex: '#2563eb' },
+            { name: 'VERDE', value: 'green', hex: '#16a34a' }
+        ];
+
+        let currentColorValue = '';
+
+        function nextRound() {
+            const wordIdx = Math.floor(Math.random() * colors.length);
+            const colorIdx = Math.floor(Math.random() * colors.length);
+            currentColorValue = colors[colorIdx].value;
+
+            stroopWord.textContent = colors[wordIdx].name;
+            stroopWord.style.color = colors[colorIdx].hex;
+            feedback.textContent = "";
+        }
+
+        startBtn.addEventListener('click', () => {
+            startBtn.classList.add('hidden');
+            colorOptions.classList.remove('hidden');
+            nextRound();
+        });
+
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const choice = btn.getAttribute('data-color');
+                if (choice === currentColorValue) {
+                    feedback.textContent = "¡CORRECTO! +1 para el Estratega";
+                    feedback.style.color = "#059669";
+                    setTimeout(nextRound, 700);
+                } else {
+                    feedback.textContent = "¡ERROR! Los impulsos ganaron";
+                    feedback.style.color = "#be123c";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
