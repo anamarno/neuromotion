@@ -1,420 +1,235 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Corteza Prefrontal - Neuromotion USAL</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --primary-blue: #003366;
-            --highlight-yellow: #FFD700;
-            --text-main: #1a1a1a;
-            --bg-accessible: #ffffff;
-            --stroop-red: #e11d48;
-            --stroop-blue: #2563eb;
-            --stroop-green: #16a34a;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corteza prefrontal | NeuroMotion-USAL</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --text:#0f172a; --muted:#475569; --card:#ffffff; --line:#e2e8f0;
+      --dark:#0f172a; --blue:#2563eb; --blue2:#dbeafe; --green:#22c55e; --red:#ef4444;
+      --orange:#f97316; --purple:#9333ea; --indigo:#1e1b4b; --yellow:#facc15;
+      --shadow:0 20px 45px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    body.high-contrast{background:#000;color:#fff;--card:#000;--text:#fff;--muted:#fff;--line:#facc15;--shadow:none}
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit;cursor:pointer;border:0}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+    header{position:sticky;top:0;z-index:50;background:#0f172a;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+    body.high-contrast header{background:#000;border-bottom:2px solid var(--yellow)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em}
+    .brand-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--blue)}
+    body.high-contrast .brand-icon{background:var(--yellow);color:#000}
+    nav{display:flex;gap:20px;font-size:.92rem;font-weight:700;white-space:nowrap}
+    nav a:hover{color:#93c5fd}
+    .access-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.08);color:#fff;font-weight:800}
+    body.high-contrast .access-btn{background:var(--yellow);color:#000;border-color:var(--yellow)}
+    main{padding:48px 0 70px}.spaced{display:flex;flex-direction:column;gap:96px}
+    .hero{display:grid;grid-template-columns:290px 1fr;gap:42px;align-items:center;background:#fff;border-radius:48px;padding:48px;box-shadow:var(--shadow)}
+    body.high-contrast .hero{background:#000;border:4px solid var(--yellow);box-shadow:none}
+    .avatar-box{position:relative;width:270px;height:270px;display:grid;place-items:center}.avatar-glow{position:absolute;inset:0;border-radius:50%;background:#dbeafe;animation:pulse 2.4s ease-in-out infinite}
+    body.high-contrast .avatar-glow{background:rgba(250,204,21,.18)}
+    .avatar{position:relative;z-index:1;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(15,23,42,.22));transition:transform .2s}.avatar:hover{transform:scale(1.04)}
+    .fallback-brain{position:relative;z-index:1;width:180px;height:180px;color:var(--blue)}
+    .pill{display:inline-block;padding:8px 16px;border-radius:999px;background:#dbeafe;color:#1e40af;text-transform:uppercase;font-weight:900;font-size:.82rem;letter-spacing:.08em;margin-bottom:18px}
+    body.high-contrast .pill{background:var(--yellow);color:#000}.hero h1{font-size:clamp(2.4rem,5vw,4rem);line-height:1.05;margin:0 0 22px;font-weight:950;letter-spacing:-.04em}.hero p{font-size:1.22rem;color:var(--muted);margin:0 0 30px}.cta,.audio-btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:14px 22px;background:var(--blue);color:#fff;font-weight:900;font-size:1rem;box-shadow:0 12px 24px rgba(37,99,235,.25)}
+    .audio-btn{background:#fff;color:#334155;border:2px solid #e2e8f0;box-shadow:0 4px 12px rgba(15,23,42,.05)}
+    .audio-btn.playing,.cta.playing{background:#ef4444;color:#fff;border-color:#ef4444}body.high-contrast .cta,body.high-contrast .audio-btn{background:var(--yellow);color:#000;border:2px solid var(--yellow);box-shadow:none}body.high-contrast .audio-btn.playing,body.high-contrast .cta.playing{background:#ef4444;color:#fff;border-color:#ef4444}
+    .section-head{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:32px}.section-title{display:flex;align-items:center;gap:14px}.section-icon{display:grid;place-items:center;width:60px;height:60px;border-radius:18px;background:#dbeafe;color:var(--blue)}body.high-contrast .section-icon{background:var(--yellow);color:#000}.section-head h2{font-size:2rem;line-height:1.1;margin:0;font-weight:950;letter-spacing:-.03em}body.high-contrast .section-head h2{color:var(--yellow)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.card{background:var(--card);border:1px solid #f1f5f9;border-radius:34px;padding:30px;box-shadow:0 8px 24px rgba(15,23,42,.04)}body.high-contrast .card{border:2px solid var(--yellow);box-shadow:none}.card-kicker{text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;font-weight:950;color:#94a3b8}.card h3{font-size:1.55rem;line-height:1.15;margin:4px 0 10px}.card-intro{font-size:.98rem;color:var(--muted);margin:0 0 22px}.divider{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:24px}.challenge-area{min-height:300px;display:flex;align-items:center;justify-content:center;text-align:center}.stroop-word{font-size:clamp(3.5rem,8vw,5rem);font-weight:950;letter-spacing:.06em;margin-bottom:44px}.blue{color:#2563eb}.red{color:#dc2626}.green{color:#16a34a}.purple{color:#9333ea}.soft-btn{border-radius:14px;padding:14px 22px;background:#dbeafe;color:#1d4ed8;font-weight:900;font-size:1.1rem}.soft-btn:hover{filter:brightness(.96)}body.high-contrast .soft-btn{background:var(--yellow);color:#000}.progress-text{margin-top:12px;font-size:.78rem;color:#94a3b8;font-weight:900;letter-spacing:.1em}.result-box{background:#eff6ff;border-radius:22px;padding:28px}body.high-contrast .result-box{background:rgba(255,255,255,.08);border:1px solid var(--yellow)}.result-box h4{font-size:1.25rem;margin:8px 0}.plain-btn{display:inline-flex;align-items:center;gap:8px;background:transparent;color:inherit;font-weight:800;opacity:.75}.plain-btn:hover{opacity:1}.start-btn{padding:16px 28px;border-radius:999px;background:#22c55e;color:#fff;font-weight:950;font-size:1.15rem;box-shadow:0 12px 25px rgba(34,197,94,.25)}.task-space{display:flex;flex-direction:column;gap:24px}.balance-labels{display:flex;justify-content:space-between;font-size:.78rem;font-weight:900;margin-bottom:8px}.bar{height:26px;background:#e2e8f0;border:2px solid #cbd5e1;border-radius:999px;overflow:hidden}.bar-fill{height:100%;width:100%;background:#22c55e;transition:width .25s, background .25s}.balance-btn{width:100%;margin-top:12px;padding:14px;border-radius:14px;background:#0f172a;color:#fff;font-weight:950;font-size:1.05rem}.math-box{border:2px solid #dbeafe;background:rgba(239,246,255,.55);border-radius:18px;padding:24px;text-align:center}body.high-contrast .math-box{background:#000;border-color:var(--yellow)}.math-q{font-size:2rem;font-weight:950;letter-spacing:.08em;margin-bottom:18px}.options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.option-btn{border:2px solid #bfdbfe;background:#fff;color:#1e3a8a;border-radius:12px;padding:12px;font-weight:950;font-size:1.2rem}body.high-contrast .option-btn{background:#000;color:#fff;border-color:var(--yellow)}.option-btn:hover{background:#dbeafe}body.high-contrast .option-btn:hover{background:var(--yellow);color:#000}.gameover{text-align:center;padding:24px}.gameover h4{font-size:1.6rem;margin:8px 0}.gameover p{margin:8px 0;color:var(--muted)}
+    .accordion-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.acc-card{border:2px solid transparent;border-radius:28px;background:#fff;overflow:hidden;box-shadow:0 8px 18px rgba(15,23,42,.04)}body.high-contrast .acc-card{background:#000;border-color:var(--yellow);box-shadow:none}.acc-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:22px;text-align:left;color:inherit}.acc-head h4{font-size:1.2rem;margin:0 0 4px;font-weight:950}.acc-head p{margin:0;font-size:.92rem;font-weight:700;opacity:.8}.acc-blue{background:#eff6ff;color:#1e3a8a}.acc-green{background:#ecfdf5;color:#064e3b}.acc-purple{background:#faf5ff;color:#581c87}.acc-orange{background:#fff7ed;color:#7c2d12}body.high-contrast .acc-head{background:#000;color:#fff}.chev{display:grid;place-items:center;min-width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.55)}body.high-contrast .chev{background:var(--yellow);color:#000}.acc-body{display:none;padding:0 24px 24px}.acc-body.open{display:block}.acc-body p{font-size:1.05rem;color:var(--muted);margin:0}.movement-box{margin-top:44px;padding:40px;border-radius:48px;background:#f1f5f9}body.high-contrast .movement-box{background:#000;border:2px solid #fff}.movement-box h3{text-align:center;font-size:1.55rem;font-weight:950;margin:0 0 26px}.movement-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}.movement-title{display:flex;gap:10px;align-items:center;font-weight:950;font-size:1.05rem;margin-bottom:8px}.movement-grid p{margin:0;color:var(--muted);font-size:1.03rem}.rehab-panel{position:relative;overflow:hidden;border-radius:48px;background:#1e1b4b;color:#fff;padding:42px}body.high-contrast .rehab-panel{background:#000;border:2px solid var(--yellow)}.warning{display:flex;gap:16px;align-items:flex-start;background:rgba(239,68,68,.18);border:1px solid rgba(248,113,113,.35);border-radius:22px;padding:22px;margin-bottom:34px}.warning h4{margin:0 0 6px;color:#fecaca;font-size:1.25rem}.warning p{margin:0;color:#e0e7ff}.rehab-panel h3{color:#c7d2fe;font-size:1.45rem;margin:0 0 24px}.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.prof-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:22px;padding:22px}.prof-card h4{font-size:1.18rem;margin:0 0 10px;color:#c7d2fe}.prof-card p{font-size:.96rem;margin:0;color:#e0e7ff}body.high-contrast .prof-card,body.high-contrast .warning{border-color:rgba(250,204,21,.6);background:#000}body.high-contrast .prof-card h4,body.high-contrast .rehab-panel h3{color:var(--yellow)}
+    footer{border-top:1px solid var(--line);background:#f1f5f9;padding:48px 0;text-align:center}body.high-contrast footer{background:#000;border-color:var(--yellow)}.footer-badge{display:inline-flex;align-items:center;gap:10px;border:2px solid currentColor;border-radius:999px;padding:14px 26px;font-size:1.1rem;font-weight:950;margin-bottom:18px}.footer-text{max-width:760px;margin:0 auto;color:var(--muted);font-size:1.1rem}.icon{width:1.2em;height:1.2em;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}.icon-lg{width:2rem;height:2rem}.icon-xl{width:3rem;height:3rem}.hidden{display:none!important}.muted{color:var(--muted)}
+    @keyframes pulse{0%,100%{transform:scale(.97);opacity:.85}50%{transform:scale(1.03);opacity:1}}
+    @media(max-width:850px){.hero{grid-template-columns:1fr;text-align:center;padding:34px}.avatar-box{margin:0 auto}.grid-2,.accordion-grid,.movement-grid,.prof-grid{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}nav{gap:12px;font-size:.82rem}.brand span{display:none}.access-btn span{display:none}.hero .cta{margin:0 auto}.topbar{gap:10px}}
+    @media(max-width:560px){.wrap{padding:0 12px}.hero{border-radius:34px;padding:26px}.avatar-box{width:220px;height:220px}.card{padding:24px;border-radius:28px}.section-head h2{font-size:1.65rem}nav{max-width:50vw;overflow-x:auto}.spaced{gap:72px}.options{grid-template-columns:1fr}.rehab-panel,.movement-box{border-radius:32px;padding:26px}}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:800;
+}
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.8;
-            color: var(--text-main);
-            background-color: var(--bg-accessible);
-            font-size: 1.15rem;
-        }
+.brand-logo{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  display:block;
+}  
+.footer-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border:2px solid currentColor;
+  border-radius:999px;
+  padding:14px 26px;
+  font-size:1.1rem;
+  font-weight:950;
+  margin-bottom:18px;
+}
 
-        h1, h2, h3 {
-            color: var(--primary-blue);
-            font-weight: 800;
-        }
-
-        .audio-button {
-            background-color: var(--primary-blue);
-            color: white;
-            border: 4px solid var(--highlight-yellow);
-            transition: all 0.2s;
-        }
-
-        .content-card {
-            border-left: 8px solid var(--primary-blue);
-            background-color: #f8fafc;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-radius: 0 1rem 1rem 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .highlight-box {
-            background-color: #fffbeb;
-            border: 2px solid var(--highlight-yellow);
-            padding: 1.5rem;
-            border-radius: 1rem;
-        }
-
-        /* Estilos del Juego Stroop */
-        #stroop-container {
-            border: 4px dashed var(--primary-blue);
-            padding: 2rem;
-            border-radius: 1.5rem;
-            background-color: white;
-            text-align: center;
-        }
-
-        #stroop-word {
-            font-size: 4rem;
-            font-weight: 900;
-            margin: 1rem 0;
-            min-height: 6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-transform: uppercase;
-        }
-
-        .color-btn {
-            padding: 1rem;
-            border-radius: 0.75rem;
-            font-weight: bold;
-            transition: transform 0.1s;
-        }
-
-        .btn-red { background-color: var(--stroop-red); color: white; }
-        .btn-blue { background-color: var(--stroop-blue); color: white; }
-        .btn-green { background-color: var(--stroop-green); color: white; }
-
-        /* Simulador Doble Tarea */
-        .slider-neuro {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 12px;
-            border-radius: 10px;
-            background: #cbd5e1;
-            outline: none;
-        }
-        .slider-neuro::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--primary-blue);
-            border: 3px solid var(--highlight-yellow);
-            cursor: pointer;
-        }
-    </style>
+.footer-logo{
+  width:28px;
+  height:28px;
+  object-fit:contain;
+  display:block;
+}
+</style>
 </head>
-<body class="p-4 md:p-8 max-w-5xl mx-auto">
+<body>
+<header>
+  <div class="wrap topbar">
+    <div class="brand">
+  <img src="NeuroUSal.jpg" alt="Escudo de NeuroUsal" class="brand-logo">
+  <span>NeuroMotion-USAL</span>
+</div>
+    <nav aria-label="Navegación principal"><a href="#conoce">Conoce</a><a href="#retos">Retos</a><a href="#anatomia">Anatomía</a><a href="#rehab">Rehabilitación</a></nav>
+    <button class="access-btn" id="contrastBtn" type="button" aria-pressed="false">👁️ <span>Accesibilidad</span></button>
+  </div>
+</header>
+<main class="wrap spaced">
+  <section id="conoce" class="hero">
+    <div class="hero-figure">
+  <img
+    class="avatar"
+    src="Prefront.jpg"
+    alt="Prefron, personaje interactivo de la corteza prefrontal"
+    onerror="this.style.display='none';document.getElementById('fallbackAvatar').classList.remove('hidden')"
+  >
+  <div id="fallbackAvatar" class="avatar-fallback hidden" aria-hidden="true">🧠</div>
+</div>
+    <div>
+      <div class="pill">Tu centro de mando</div>
+      <h1>¡Hola! Soy Prefron</h1>
+      <p>Estoy en la parte delantera de tu lóbulo frontal. Mi misión no es solo “pensar”, sino <strong>convertir tu intención en acción</strong>. Soy el director estratégico que decide qué hacer, cuándo y cómo, adaptando tu comportamiento a cada contexto.</p>
+      <button class="cta read-btn" type="button" data-id="hero" data-text="¡Hola! Soy Prefron, tu corteza prefrontal. Estoy en la parte delantera de tu lóbulo frontal. Mi misión no es solo pensar, sino convertir tu intención en acción. Soy el director estratégico que decide qué hacer, cuándo y cómo.">🔊 Escuchar presentación</button>
+    </div>
+  </section>
 
-    <!-- BARRA DE ACCESIBILIDAD -->
-    <nav class="mb-8 sticky top-0 bg-white/90 backdrop-blur-sm py-4 border-b-2 border-gray-100 z-50 flex flex-col gap-2">
-        <button id="btn-audio" class="audio-button px-6 py-3 rounded-full flex items-center gap-3 w-full md:w-auto justify-center font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform">
-            <span aria-hidden="true">🔊</span> 
-            <span>ESCUCHAR EXPLICACIÓN</span>
-        </button>
-        <p id="audio-status" class="text-xs font-semibold italic text-blue-900 text-center md:text-left" aria-live="polite"></p>
-    </nav>
-
-    <header class="mb-12">
-        <div class="flex items-center gap-4 mb-4">
-            <div class="w-16 h-16 bg-blue-900 rounded-lg flex items-center justify-center text-white text-3xl font-bold shadow-md">CPF</div>
-            <div>
-                <p class="text-blue-800 font-bold uppercase tracking-widest text-sm">Neuromotion-USAL | Estación 3</p>
-                <h1 class="text-4xl md:text-5xl">La Corteza Prefrontal</h1>
-            </div>
+  <section id="retos" class="scroll-section">
+    <div class="section-head">
+      <div class="section-title"><div class="section-icon">▶</div><h2>Ponte a prueba</h2></div>
+      <button class="audio-btn read-btn" type="button" data-id="retos_audio" data-text="Aquí tienes dos retos. El test de Stroop evalúa tu control inhibitorio al tener que decir el color de la tinta ignorando la palabra escrita. El reto de doble tarea simula lo que ocurre cuando intentas mantener el equilibrio mientras resuelves un problema cognitivo.">🔊 Escuchar texto</button>
+    </div>
+    <div class="grid-2">
+      <article class="card">
+        <div class="divider"><div class="card-kicker">Reto 1</div><h3>Test de Stroop</h3><p class="card-intro">Di en voz alta el <strong>color de la tinta</strong>, no leas la palabra.</p></div>
+        <div class="challenge-area" id="stroopArea">
+          <div>
+            <div id="stroopWord" class="stroop-word blue">ROJO</div>
+            <button class="soft-btn" id="stroopNext" type="button">Siguiente palabra</button>
+            <div class="progress-text" id="stroopProgress">1 / 4</div>
+          </div>
         </div>
-        <p class="text-2xl text-gray-700 italic border-l-8 border-yellow-400 pl-6 py-2">
-            "Soy tu estratega. Convierto tus ganas y tus intenciones en una realidad organizada."
-        </p>
-    </header>
-
-    <main id="main-content">
-        
-        <!-- SECCIÓN 1: ¿QUIÉN SOY? (Basado en documentos) -->
-        <section class="mb-16 grid md:grid-cols-3 gap-8">
-            <div class="md:col-span-2">
-                <h2 class="text-3xl mb-4">¿Por dónde paro y qué hago?</h2>
-                <div class="content-card">
-                    <p>Estoy justo detrás de tu frente. Soy lo último que madura en el cerebro humano (¡alrededor de los 30 años!). No soy un bloque único, sino un <strong>director de orquesta</strong> que coordina tres secciones clave:</p>
-                </div>
-                <div class="grid sm:grid-cols-3 gap-4 text-sm">
-                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                        <strong class="block text-blue-900 mb-1">Dorsolateral</strong>
-                        El "cerebrito" de los datos. Gestiona la memoria de trabajo y la planificación.
-                    </div>
-                    <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
-                        <strong class="block text-amber-900 mb-1">Orbitofrontal</strong>
-                        El "filtro" social. Te ayuda a no decir lo primero que piensas y a evaluar riesgos.
-                    </div>
-                    <div class="p-4 bg-green-50 rounded-xl border border-green-100">
-                        <strong class="block text-emerald-900 mb-1">Ventromedial</strong>
-                        El "termómetro" interno. Conecta tus emociones con tus decisiones.
-                    </div>
-                </div>
-            </div>
-            <div class="flex flex-col justify-center">
-                <div class="bg-gray-200 aspect-square rounded-full flex items-center justify-center border-4 border-blue-900 shadow-inner overflow-hidden">
-                   <!-- Placeholder para imagen de localización prefrontal -->
-                   <span class="text-center p-4 text-gray-500 italic text-sm">[Imagen de Localización de la Corteza Prefrontal en el cerebro humano]</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ACTIVIDAD 1: SIMULADOR DE CARGA (DOBLE TAREA) -->
-        <section class="mb-16 bg-blue-900 text-white p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-            <div class="relative z-10">
-                <h2 class="text-3xl mb-4 text-yellow-400 text-center">Simulador: El Límite del Estratega</h2>
-                <p class="text-center mb-8 text-blue-100 max-w-2xl mx-auto">
-                    Cuando te rehabilitas, "hacer dos cosas a la vez" es el examen final. Si el estratega se satura, el cuerpo falla.
-                </p>
-                
-                <div class="grid md:grid-cols-2 gap-10 items-center">
-                    <div class="space-y-8 bg-blue-800/50 p-6 rounded-2xl">
-                        <div>
-                            <label class="block font-bold mb-2 flex justify-between">
-                                <span>🚶 Tarea Motora (Caminar)</span>
-                                <span id="m-val" class="text-yellow-400">15%</span>
-                            </label>
-                            <input type="range" id="motor-slider" class="slider-neuro" min="0" max="100" value="15">
-                        </div>
-                        <div>
-                            <label class="block font-bold mb-2 flex justify-between">
-                                <span>🗣️ Tarea Cognitiva (Conversar)</span>
-                                <span id="c-val" class="text-yellow-400">15%</span>
-                            </label>
-                            <input type="range" id="cogni-slider" class="slider-neuro" min="0" max="100" value="15">
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col items-center">
-                        <div class="relative w-28 h-56 bg-blue-950 rounded-3xl overflow-hidden border-4 border-blue-700 shadow-2xl">
-                            <div id="load-bg" class="absolute bottom-0 w-full transition-all duration-500 ease-out" style="height: 30%; background: linear-gradient(to top, #10b981, #fbbf24);"></div>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span id="total-val" class="text-5xl font-black">30%</span>
-                            </div>
-                        </div>
-                        <p class="mt-4 text-xs uppercase tracking-widest text-blue-300">Carga del Prefrontal</p>
-                    </div>
-                </div>
-
-                <div id="sim-feedback" class="mt-8 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-center text-lg italic">
-                    <!-- Feedback dinámico -->
-                </div>
-            </div>
-        </section>
-
-        <!-- ACTIVIDAD 2: STROOP -->
-        <section class="mb-16">
-            <div class="flex items-center gap-4 mb-6">
-                <h2 class="text-3xl">🎮 Reto: El Filtro de Impulsos</h2>
-                <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Test de Stroop</span>
-            </div>
-            
-            <div id="stroop-container" class="shadow-lg">
-                <p class="text-gray-500 font-bold uppercase text-sm tracking-widest mb-2">Ignora la palabra, pulsa el color de la tinta</p>
-                <div id="stroop-word">PULSA INICIAR</div>
-                
-                <div id="game-controls" class="mt-4">
-                    <button id="start-game" class="bg-blue-900 text-white px-10 py-5 rounded-2xl font-bold text-2xl hover:bg-blue-800 shadow-xl transition-all">
-                        PROBAR MI CONTROL
-                    </button>
-                </div>
-
-                <div id="color-options" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                    <button class="color-btn btn-red text-xl py-6 shadow-lg hover:scale-105" data-color="red">ROJO</button>
-                    <button class="color-btn btn-blue text-xl py-6 shadow-lg hover:scale-105" data-color="blue">AZUL</button>
-                    <button class="color-btn btn-green text-xl py-6 shadow-lg hover:scale-105" data-color="green">VERDE</button>
-                </div>
-
-                <div id="feedback" class="mt-6 text-2xl font-black min-h-[2rem]" aria-live="polite"></div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 3: CUANDO FALLO (Perspectiva Clínica) -->
-        <section class="mb-16">
-            <h2 class="text-3xl mb-8">¿Qué pasa si mi "estratega" se lesiona?</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="highlight-box">
-                    <h3 class="text-xl mb-4 flex items-center gap-2">
-                        <span>⚠️</span> Consecuencias Invisibles
-                    </h3>
-                    <ul class="space-y-4">
-                        <li class="flex gap-3">
-                            <span class="font-bold text-red-600">Apatía:</span>
-                            <span>Falta de iniciativa. No es pereza, es dificultad para arrancar el motor de la acción.</span>
-                        </li>
-                        <li class="flex gap-3">
-                            <span class="font-bold text-red-600">Impulsividad:</span>
-                            <span>Hacer las cosas sin medir el riesgo o el contexto social.</span>
-                        </li>
-                        <li class="flex gap-3">
-                            <span class="font-bold text-red-600">Perseveración:</span>
-                            <span>Quedarse "atrapado" repitiendo una acción aunque ya no sirva para nada.</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-3xl border-2 border-gray-100 flex flex-col justify-center">
-                    <h3 class="text-xl mb-2">La Pregunta Activadora</h3>
-                    <p class="text-2xl font-medium text-blue-800 mb-4">¿Alguna vez te has quedado bloqueado al intentar hacer dos cosas a la vez mientras caminas?</p>
-                    <p class="text-sm text-gray-600">Eso que sientes es tu corteza prefrontal intentando priorizar. Tras una lesión, este "bloqueo" ocurre mucho antes.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 4: EQUIPO MULTIDISCIPLINAR -->
-        <section class="mb-12 bg-white border-4 border-blue-900 p-8 rounded-3xl shadow-xl">
-            <h2 class="text-3xl mb-6 text-center">¿Quién te ayuda en Neuromotion-USAL?</h2>
-            <p class="mb-8 text-center text-lg">Rehabilitar el movimiento es mucho más que mover un músculo; es reentrenar la capacidad de decidir y participar.</p>
-            
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="text-center p-4">
-                    <div class="text-4xl mb-2">🏃‍♂️</div>
-                    <h4 class="font-bold">Fisioterapia</h4>
-                    <p class="text-sm">Diseña retos motores que obligan al cerebro a buscar nuevos caminos para organizarse.</p>
-                </div>
-                <div class="text-center p-4">
-                    <div class="text-4xl mb-2">🧶</div>
-                    <h4 class="font-bold">Terapia Ocupacional</h4>
-                    <p class="text-sm">Entrena la planificación de actividades de la vida diaria para recuperar la autonomía real.</p>
-                </div>
-                <div class="text-center p-4">
-                    <div class="text-4xl mb-2">🗣️</div>
-                    <h4 class="font-bold">Logopedia y Neuropsicología</h4>
-                    <p class="text-sm">Trabajan las funciones ejecutivas y el lenguaje, piezas clave de nuestra identidad.</p>
-                </div>
-            </div>
-            
-            <div class="mt-8 pt-8 border-t border-gray-200 text-center">
-                <p class="text-xl font-bold text-blue-900 italic">"Arreglamos al director de orquesta para que todos los músicos (los músculos) vuelvan a sonar bien."</p>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="mt-20 text-center text-gray-500 border-t pt-12 pb-8">
-        <div class="flex justify-center gap-8 mb-4">
-            <span class="font-bold text-blue-900">USAL</span>
-            <span class="font-bold text-blue-900">IBSAL</span>
-            <span class="font-bold text-blue-900">NEUROUSAL</span>
+      </article>
+      <article class="card">
+        <div class="divider"><div class="card-kicker">Reto 2</div><h3>Interferencia de doble tarea</h3><p class="card-intro"><strong>Motor:</strong> pulsa el botón repetidamente para no caer.<br><strong>Cognitivo:</strong> resuelve las sumas a la vez.</p></div>
+        <div class="challenge-area" id="doubleTaskArea">
+          <button class="start-btn" id="startDT" type="button">Comenzar reto</button>
         </div>
-        <p class="text-sm">Este contenido forma parte del proyecto de divulgación científica del Equipo NeuroUsal.</p>
-        <p class="text-xs mt-2 italic">Basado en evidencia científica actualizada 2026.</p>
-    </footer>
+      </article>
+    </div>
+  </section>
 
-    <script>
-        // LÓGICA DE AUDIO (Lectura Progresiva)
-        const btnAudio = document.getElementById('btn-audio');
-        const audioStatus = document.getElementById('audio-status');
-        let synth = window.speechSynthesis;
-        let isReading = false;
+  <section id="anatomia">
+    <div class="section-head">
+      <div class="section-title"><div class="section-icon">🎯</div><h2>Mis zonas de operaciones</h2></div>
+      <button class="audio-btn read-btn" type="button" data-id="anat_audio" data-text="No soy una estructura única y homogénea, sino un conjunto de regiones interconectadas. La dorsolateral planifica, la ventrolateral frena los impulsos, la orbitofrontal valora las recompensas y la medial detecta los errores para mantener la motivación.">🔊 Escuchar texto</button>
+    </div>
+    <div class="accordion-grid" id="accordionGrid"></div>
+    <div class="movement-box">
+      <h3>Movimiento automático vs. controlado</h3>
+      <div class="movement-grid">
+        <div><div class="movement-title">🔄 Movimiento automático</div><p>Caminar por casa o masticar. Son acciones muy repetidas que dependen menos de mí y fluyen gracias a los ganglios basales y el cerebelo.</p></div>
+        <div><div class="movement-title">📈 Movimiento controlado</div><p>Levantarse esquivando una mesa o caminar mientras hablas. Al ser tareas nuevas o complejas, reclaman mi atención directa y constante.</p></div>
+      </div>
+    </div>
+  </section>
 
-        btnAudio.addEventListener('click', () => {
-            if (isReading) {
-                synth.cancel();
-                isReading = false;
-                btnAudio.innerHTML = '<span>🔊</span> <span>ESCUCHAR EXPLICACIÓN</span>';
-                audioStatus.textContent = "";
-            } else {
-                const sections = [
-                    "La Corteza Prefrontal. Soy tu estratega. Convierto tus ganas y tus intenciones en una realidad organizada.",
-                    "¿Quién soy? Soy el director de orquesta de tu cerebro. Me divido en tres áreas: la dorsolateral que es mi cerebrito de datos, la orbitofrontal que es mi filtro social, y la ventromedial que es mi termómetro de emociones.",
-                    "En rehabilitación, no solo entrenamos músculos. Entrenamos la capacidad de decidir y planificar. Si el estratega falla, el movimiento pierde su sentido."
-                ];
-                
-                const utterance = new SpeechSynthesisUtterance(sections.join(" "));
-                utterance.lang = 'es-ES';
-                utterance.rate = 0.9;
-                
-                utterance.onstart = () => {
-                    isReading = true;
-                    btnAudio.innerHTML = '<span>⏹️</span> <span>DETENER</span>';
-                    audioStatus.textContent = "Reproduciendo guía auditiva...";
-                };
-                utterance.onend = () => {
-                    isReading = false;
-                    btnAudio.innerHTML = '<span>🔊</span> <span>ESCUCHAR EXPLICACIÓN</span>';
-                    audioStatus.textContent = "";
-                };
-                synth.speak(utterance);
-            }
-        });
+  <section id="rehab">
+    <div class="section-head">
+      <div class="section-title"><div class="section-icon">👥</div><h2>Neurorrehabilitación</h2></div>
+      <button class="audio-btn read-btn" type="button" data-id="rehab_audio" data-text="Cuando la corteza prefrontal falla por un ictus o traumatismo, la persona conserva la fuerza pero pierde la capacidad de organizar su conducta. La fisioterapia, terapia ocupacional, logopedia y neuropsicología trabajan unidas para recuperar la autonomía, entrenando la atención, la planificación y la gestión emocional.">🔊 Escuchar texto</button>
+    </div>
+    <div class="rehab-panel">
+      <div class="warning"><div style="font-size:2rem">⚠️</div><div><h4>¿Qué ocurre si fallo?</h4><p>No siempre aparece parálisis. Puedes conservar fuerza, pero perder la capacidad de organizar tu vida. Aparece impulsividad, distractibilidad, apatía o problemas para mantener rutinas y regular emociones.</p></div></div>
+      <h3>El trabajo en equipo para recuperarte:</h3>
+      <div class="prof-grid">
+        <div class="prof-card"><h4>Fisioterapia neurológica</h4><p>Entrenamos la doble tarea en entornos reales. Graduamos la complejidad cognitiva para que el paciente no solo recupere la marcha, sino que sepa decidir cuándo y cómo moverse seguro.</p></div>
+        <div class="prof-card"><h4>Terapia ocupacional</h4><p>Reeducamos la capacidad de planificar y organizar los pasos de las actividades de la vida diaria, como vestirse o cocinar, fomentando la autonomía real.</p></div>
+        <div class="prof-card"><h4>Neuropsicología</h4><p>Trabajamos específicamente la memoria de trabajo, la flexibilidad cognitiva, el control de impulsos y la gestión emocional ante la frustración.</p></div>
+        <div class="prof-card"><h4>Logopedia</h4><p>Mejoramos la organización del discurso, el control inhibitorio durante la conversación y la adaptación social comunicativa.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="footer-badge">
+  <img src="NeuroUSal.jpg" alt="Escudo de NeuroUsal" class="footer-logo">
+  <span>NeuroMotion-USAL</span>
+</div><p class="footer-text">La corteza prefrontal nos recuerda que el movimiento humano no es solo músculos. Necesitamos integrar percepción, memoria, emoción, decisión y acción.</p></div>
+</footer>
+<script>
+(function(){
+  const body=document.body; const contrastBtn=document.getElementById('contrastBtn');
+  contrastBtn.addEventListener('click',()=>{body.classList.toggle('high-contrast'); contrastBtn.setAttribute('aria-pressed', body.classList.contains('high-contrast')?'true':'false');});
 
-        // LÓGICA SIMULADOR DOBLE TAREA
-        const mS = document.getElementById('motor-slider');
-        const cS = document.getElementById('cogni-slider');
-        const loadBg = document.getElementById('load-bg');
-        const totalV = document.getElementById('total-val');
-        const simFeedback = document.getElementById('sim-feedback');
+  let speakingId=null;
+  function stopSpeech(){ window.speechSynthesis.cancel(); speakingId=null; document.querySelectorAll('.read-btn').forEach(b=>{b.classList.remove('playing'); b.textContent=b.classList.contains('cta')?'🔊 Escuchar presentación':'🔊 Escuchar texto';}); }
+  document.querySelectorAll('.read-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.id, text=btn.dataset.text;
+      if(speakingId===id){ stopSpeech(); return; }
+      stopSpeech(); speakingId=id; btn.classList.add('playing'); btn.textContent=btn.classList.contains('cta')?'⏸ Detener lectura':'⏸ Pausar audio';
+      if(!('speechSynthesis' in window)){ alert('Este navegador no permite lectura en voz alta.'); stopSpeech(); return; }
+      const utterance=new SpeechSynthesisUtterance(text); utterance.lang='es-ES'; utterance.rate=.92; utterance.pitch=1;
+      utterance.onend=stopSpeech; utterance.onerror=stopSpeech; window.speechSynthesis.speak(utterance);
+    });
+  });
 
-        function updateSim() {
-            const m = parseInt(mS.value);
-            const c = parseInt(cS.value);
-            const total = m + c;
+  const stroopWords=[{text:'ROJO', color:'blue', name:'azul'}, {text:'VERDE', color:'red', name:'rojo'}, {text:'AZUL', color:'green', name:'verde'}, {text:'AMARILLO', color:'purple', name:'morado'}];
+  let stroopIndex=0, showStroopResult=false;
+  const stroopArea=document.getElementById('stroopArea');
+  function renderStroop(){
+    if(!showStroopResult){
+      const w=stroopWords[stroopIndex];
+      stroopArea.innerHTML=`<div><div id="stroopWord" class="stroop-word ${w.color}">${w.text}</div><button class="soft-btn" id="stroopNext" type="button">${stroopIndex<stroopWords.length-1?'Siguiente palabra':'Ver resultado'}</button><div class="progress-text">${stroopIndex+1} / ${stroopWords.length}</div></div>`;
+      document.getElementById('stroopNext').addEventListener('click',()=>{ if(stroopIndex<stroopWords.length-1) stroopIndex++; else showStroopResult=true; renderStroop(); });
+    } else {
+      stroopArea.innerHTML=`<div class="result-box"><div style="font-size:3rem;color:#22c55e">✓</div><h4>Control inhibitorio</h4><p>Si has dudado, es normal. Tu <strong>corteza ventrolateral</strong> ha tenido que esforzarse para frenar tu impulso automático de leer, obligándote a procesar el color.</p><button class="plain-btn" id="repeatStroop" type="button">🔄 Repetir test</button></div>`;
+      document.getElementById('repeatStroop').addEventListener('click',()=>{stroopIndex=0;showStroopResult=false;renderStroop();});
+    }
+  }
+  renderStroop();
 
-            document.getElementById('m-val').innerText = m + '%';
-            document.getElementById('c-val').innerText = c + '%';
-            totalV.innerText = total + '%';
-            
-            loadBg.style.height = (total > 100 ? 100 : total) + '%';
+  let dtActive=false, dtBalance=100, dtScore=0, dtGameOver=false, dtMath={q:'Empezar',a:0,options:[]}, dtTimer=null;
+  const dtArea=document.getElementById('doubleTaskArea');
+  function generateMath(){ const n1=Math.floor(Math.random()*10)+1, n2=Math.floor(Math.random()*10)+1, ans=n1+n2; dtMath={q:`${n1} + ${n2}`, a:ans, options:[ans, ans+2, ans-1].sort(()=>Math.random()-.5)}; }
+  function updateBar(){ const fill=document.getElementById('dtFill'); if(!fill) return; fill.style.width=dtBalance+'%'; fill.style.background=dtBalance>50?'#22c55e':dtBalance>20?'#f97316':'#ef4444'; }
+  function startDT(){ dtActive=true; dtGameOver=false; dtBalance=100; dtScore=0; generateMath(); renderDT(); clearInterval(dtTimer); dtTimer=setInterval(()=>{ if(!dtActive||dtGameOver) return; dtBalance=Math.max(0,dtBalance-8); updateBar(); if(dtBalance<=0){ dtGameOver=true; dtActive=false; clearInterval(dtTimer); renderDT(); } },500); }
+  function renderDT(){
+    if(!dtActive && !dtGameOver){ dtArea.innerHTML='<button class="start-btn" id="startDT" type="button">Comenzar reto</button>'; document.getElementById('startDT').addEventListener('click',startDT); return; }
+    if(dtActive){ dtArea.innerHTML=`<div class="task-space"><div><div class="balance-labels"><span>Peligro de caída</span><span>Equilibrio seguro</span></div><div class="bar"><div class="bar-fill" id="dtFill"></div></div><button class="balance-btn" id="balanceBtn" type="button">¡PULSA PARA EQUILIBRAR!</button></div><div class="math-box"><div class="math-q">${dtMath.q} = ?</div><div class="options">${dtMath.options.map(o=>`<button class="option-btn" data-opt="${o}" type="button">${o}</button>`).join('')}</div></div></div>`;
+      updateBar(); document.getElementById('balanceBtn').addEventListener('click',()=>{dtBalance=Math.min(100,dtBalance+15);updateBar();});
+      document.querySelectorAll('.option-btn').forEach(b=>b.addEventListener('click',()=>{const opt=Number(b.dataset.opt); if(opt===dtMath.a){dtScore++;generateMath();renderDT();} else {dtBalance=Math.max(0,dtBalance-20);updateBar(); if(dtBalance<=0){dtGameOver=true;dtActive=false;clearInterval(dtTimer);renderDT();}}})); return; }
+    dtArea.innerHTML=`<div class="gameover"><div style="font-size:3rem;color:#ef4444">⚠️</div><h4>¡Te has desequilibrado!</h4><p>Has resuelto <strong>${dtScore}</strong> sumas antes de perder el equilibrio.</p><p><em>Esto simula cómo tu atención se divide. Si hay daño neurológico, caminar mientras hablas puede causar caídas porque la corteza prefrontal se satura.</em></p><button class="soft-btn" id="retryDT" type="button">Intentar de nuevo</button></div>`;
+    document.getElementById('retryDT').addEventListener('click',startDT);
+  }
+  renderDT();
 
-            if(total < 40) {
-                simFeedback.innerHTML = `<span class="text-emerald-300 font-bold">SEGURIDAD:</span> El estratega tiene control total. Puedes caminar y hablar con fluidez.`;
-                loadBg.style.background = "#10b981";
-            } else if(total <= 90) {
-                simFeedback.innerHTML = `<span class="text-yellow-400 font-bold">ALERTA:</span> Competición de recursos. Tu paso se vuelve más lento o cometes errores al hablar. ¡Cuidado!`;
-                loadBg.style.background = "#f59e0b";
-            } else {
-                simFeedback.innerHTML = `<span class="text-red-500 font-bold">BLOQUEO:</span> El prefrontal se desborda. Riesgo inminente de caída o parálisis en la conversación.`;
-                loadBg.style.background = "#ef4444";
-            }
-        }
-
-        mS.oninput = updateSim;
-        cS.oninput = updateSim;
-        updateSim();
-
-        // LÓGICA STROOP
-        const stroopWord = document.getElementById('stroop-word');
-        const startBtn = document.getElementById('start-game');
-        const colorOptions = document.getElementById('color-options');
-        const feedback = document.getElementById('feedback');
-        
-        const colors = [
-            { name: 'ROJO', value: 'red', hex: '#e11d48' },
-            { name: 'AZUL', value: 'blue', hex: '#2563eb' },
-            { name: 'VERDE', value: 'green', hex: '#16a34a' }
-        ];
-
-        let currentColorValue = '';
-
-        function nextRound() {
-            const wordIdx = Math.floor(Math.random() * colors.length);
-            const colorIdx = Math.floor(Math.random() * colors.length);
-            currentColorValue = colors[colorIdx].value;
-
-            stroopWord.textContent = colors[wordIdx].name;
-            stroopWord.style.color = colors[colorIdx].hex;
-            feedback.textContent = "";
-        }
-
-        startBtn.addEventListener('click', () => {
-            startBtn.classList.add('hidden');
-            colorOptions.classList.remove('hidden');
-            nextRound();
-        });
-
-        document.querySelectorAll('.color-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const choice = btn.getAttribute('data-color');
-                if (choice === currentColorValue) {
-                    feedback.textContent = "¡CORRECTO! +1 para el Estratega";
-                    feedback.style.color = "#059669";
-                    setTimeout(nextRound, 700);
-                } else {
-                    feedback.textContent = "¡ERROR! Los impulsos ganaron";
-                    feedback.style.color = "#be123c";
-                }
-            });
-        });
-    </script>
+  const regions=[
+    {n:'Corteza dorsolateral', f:'Memoria de trabajo y planificación', d:'Es como la pizarra mental. Mantiene la información activa mientras resuelves problemas y organizas la secuencia de pasos para alcanzar un objetivo.', c:'acc-blue'},
+    {n:'Corteza ventrolateral', f:'Control inhibitorio', d:'Te permite frenar respuestas impulsivas. Modifica o detiene una acción cuando el contexto cambia y ya no es adecuada, como en el test de Stroop.', c:'acc-green'},
+    {n:'Corteza orbitofrontal', f:'Decisiones y recompensas', d:'Vinculada a la valoración de riesgos, consecuencias y toma de decisiones sociales. Ajusta la conducta según el resultado que esperas obtener.', c:'acc-purple'},
+    {n:'Corteza medial / cingulada', f:'Motivación y error', d:'Monitoriza tus errores y regula la toma de decisiones basada en el esfuerzo. Es vital para mantener la motivación hacia metas personales.', c:'acc-orange'}
+  ];
+  const accGrid=document.getElementById('accordionGrid');
+  accGrid.innerHTML=regions.map((r,i)=>`<article class="acc-card"><button class="acc-head ${r.c}" type="button" data-acc="${i}"><div><h4>${r.n}</h4><p>${r.f}</p></div><span class="chev" id="chev${i}">⌄</span></button><div class="acc-body" id="accBody${i}"><p>${r.d}</p></div></article>`).join('');
+  document.querySelectorAll('.acc-head').forEach(btn=>btn.addEventListener('click',()=>{ const id=btn.dataset.acc; const bodyEl=document.getElementById('accBody'+id); const isOpen=bodyEl.classList.contains('open'); document.querySelectorAll('.acc-body').forEach(el=>el.classList.remove('open')); document.querySelectorAll('.chev').forEach(el=>el.textContent='⌄'); if(!isOpen){bodyEl.classList.add('open'); document.getElementById('chev'+id).textContent='⌃';} }));
+})();
+</script>
 </body>
 </html>
