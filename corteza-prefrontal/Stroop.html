@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroop Test - Neuromotion USAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --highlight-yellow: #FFD700;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+        .stroop-card {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        #word-display {
+            font-size: 5rem;
+            font-weight: 900;
+            min-height: 8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            transition: transform 0.2s ease;
+        }
+        .btn-option {
+            transition: all 0.2s;
+            border-bottom: 4px solid rgba(0,0,0,0.2);
+        }
+        .btn-option:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        #progress-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-xl stroop-card p-8 md:p-12 relative overflow-hidden">
+        
+        <!-- Pantalla de Inicio -->
+<div id="screen-start" class="text-center">
+
+    <!-- Escudo NeuroUSAL -->
+    <div class="mb-6 flex justify-center">
+        <img src="NeuroUSal.jpg" 
+             alt="Escudo NeuroUSAL" 
+             class="w-32 h-auto rounded-xl shadow-md">
+    </div>
+
+    <div class="mb-6 inline-block p-4 bg-blue-50 rounded-full">
+        <span class="text-5xl">🧠</span>
+    </div>
+            <h1 class="text-3xl font-extrabold text-blue-900 mb-4">Reto de Inhibición</h1>
+            <p class="text-gray-600 mb-8 text-lg">
+                Tu tarea es sencilla pero difícil: <br>
+                <strong class="text-blue-800">Pulsa el color de la tinta</strong>, ignorando lo que dice la palabra escrita.
+            </p>
+            <div class="bg-yellow-50 border-2 border-yellow-200 p-4 rounded-xl mb-8 text-sm text-amber-800 italic">
+                Rondas: 10 | El tiempo cuenta para tu puntuación final.
+            </div>
+            <button id="btn-start" class="w-full bg-blue-900 text-white py-4 rounded-2xl font-bold text-xl shadow-lg hover:bg-blue-800 transition-colors">
+                COMENZAR TEST
+            </button>
+        </div>
+
+        <!-- Pantalla de Juego -->
+        <div id="screen-game" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Ronda <span id="current-round">1</span>/10</span>
+                <span class="text-sm font-bold text-blue-900" id="timer">0.0s</span>
+            </div>
+            
+            <div class="progress-bar mb-10">
+                <div id="progress-fill" style="width: 10%;"></div>
+            </div>
+
+            <div id="word-display" class="mb-10">---</div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button class="btn-option bg-red-600 hover:bg-red-700 text-white py-6 rounded-xl font-bold text-lg" data-color="red">ROJO</button>
+                <button class="btn-option bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-xl font-bold text-lg" data-color="blue">AZUL</button>
+                <button class="btn-option bg-green-600 hover:bg-green-700 text-white py-6 rounded-xl font-bold text-lg" data-color="green">VERDE</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="screen-results" class="hidden text-center">
+            <h2 class="text-3xl font-black text-blue-900 mb-2">¡Test Completado!</h2>
+            <p class="text-gray-500 mb-8">Estado de tu Corteza Prefrontal</p>
+            
+            <div class="flex justify-around mb-10">
+                <div>
+                    <p class="text-4xl font-black text-green-600" id="final-hits">0</p>
+                    <p class="text-xs uppercase font-bold text-gray-400">Aciertos</p>
+                </div>
+                <div>
+                    <p class="text-4xl font-black text-blue-900" id="final-score">0</p>
+                    <p class="text-xs uppercase font-bold text-gray-400">Puntos</p>
+                </div>
+                <div>
+                    <p class="text-4xl font-black text-red-500" id="final-errors">0</p>
+                    <p class="text-xs uppercase font-bold text-gray-400">Errores</p>
+                </div>
+            </div>
+
+            <div id="performance-msg" class="p-6 bg-blue-50 rounded-2xl mb-8 text-blue-900 font-medium">
+                <!-- Mensaje según puntuación -->
+            </div>
+
+            <button onclick="location.reload()" class="w-full bg-gray-100 text-gray-700 py-4 rounded-2xl font-bold hover:bg-gray-200 transition-colors">
+                REPETIR ENTRENAMIENTO
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const colors = [
+            { id: 'red', name: 'ROJO', hex: '#dc2626' },
+            { id: 'blue', name: 'AZUL', hex: '#2563eb' },
+            { id: 'green', name: 'VERDE', hex: '#16a34a' }
+        ];
+
+        let state = {
+            currentRound: 0,
+            totalRounds: 10,
+            hits: 0,
+            errors: 0,
+            startTime: 0,
+            totalTime: 0,
+            correctColor: '',
+            gameActive: false
+        };
+
+        const screens = {
+            start: document.getElementById('screen-start'),
+            game: document.getElementById('screen-game'),
+            results: document.getElementById('screen-results')
+        };
+
+        function showScreen(name) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            screens[name].classList.remove('hidden');
+        }
+
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+            const startTime = Date.now();
+            const interval = setInterval(() => {
+                if (!state.gameActive) {
+                    clearInterval(interval);
+                    return;
+                }
+                const elapsed = (Date.now() - startTime) / 1000;
+                timerDisplay.innerText = elapsed.toFixed(1) + 's';
+            }, 100);
+        }
+
+        function nextRound() {
+            if (state.currentRound >= state.totalRounds) {
+                endGame();
+                return;
+            }
+
+            state.currentRound++;
+            document.getElementById('current-round').innerText = state.currentRound;
+            document.getElementById('progress-fill').style.width = (state.currentRound * 10) + '%';
+
+            // Lógica de Stroop: Palabra aleatoria y Color aleatorio
+            const wordIdx = Math.floor(Math.random() * colors.length);
+            let colorIdx = Math.floor(Math.random() * colors.length);
+            
+            // Forzar interferencia (que el color sea diferente a la palabra con alta probabilidad)
+            if(Math.random() > 0.2) {
+                while(colorIdx === wordIdx) {
+                    colorIdx = Math.floor(Math.random() * colors.length);
+                }
+            }
+
+            const display = document.getElementById('word-display');
+            display.innerText = colors[wordIdx].name;
+            display.style.color = colors[colorIdx].hex;
+            state.correctColor = colors[colorIdx].id;
+
+            // Animación de entrada
+            display.style.transform = 'scale(0.8)';
+            setTimeout(() => display.style.transform = 'scale(1)', 50);
+        }
+
+        function handleAnswer(choice) {
+            if (!state.gameActive) return;
+
+            if (choice === state.correctColor) {
+                state.hits++;
+            } else {
+                state.errors++;
+            }
+
+            nextRound();
+        }
+
+        function endGame() {
+            state.gameActive = false;
+            state.totalTime = (Date.now() - state.startTime) / 1000;
+            
+            // Cálculo de puntuación (Aciertos / Tiempo * Multiplicador)
+            const score = Math.max(0, Math.round((state.hits * 1000) - (state.errors * 500) - (state.totalTime * 10)));
+            
+            document.getElementById('final-hits').innerText = state.hits;
+            document.getElementById('final-errors').innerText = state.errors;
+            document.getElementById('final-score').innerText = score;
+
+            let msg = "";
+            if (score > 8000) msg = "¡Estratega de élite! Tu corteza prefrontal tiene una capacidad de inhibición asombrosa.";
+            else if (score > 4000) msg = "Buen control. Tu 'Director de Orquesta' está en forma, aunque ha habido algunas dudas.";
+            else msg = "Necesitas entrenar al estratega. Los impulsos están ganando la batalla al control.";
+
+            document.getElementById('performance-msg').innerText = msg;
+            showScreen('results');
+        }
+
+        document.getElementById('btn-start').addEventListener('click', () => {
+            state.gameActive = true;
+            state.startTime = Date.now();
+            showScreen('game');
+            startTimer();
+            nextRound();
+        });
+
+        document.querySelectorAll('.btn-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                handleAnswer(btn.getAttribute('data-color'));
+            });
+        });
+    </script>
+</body>
+</html>
