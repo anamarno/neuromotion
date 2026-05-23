@@ -1,10 +1,508 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Entrena tu corteza prefrontal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Acción Reacción! - NEUROUSAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600;700&family=Cinzel:wght@700&display=swap');
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: radial-gradient(circle, #090d16 0%, #020408 100%);
+        }
+        
+        .title-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .logo-font {
+            font-family: 'Cinzel', serif;
+        }
+
+        @keyframes star-pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 35px rgba(234, 179, 8, 0.8)); }
+            50% { transform: scale(1.3) rotate(15deg); filter: drop-shadow(0 0 55px rgba(234, 179, 8, 1)); }
+        }
+
+        .star-active {
+            animation: star-pulse 1.0s infinite ease-in-out;
+        }
+
+        @keyframes bell-ring {
+            0%, 100% { transform: rotate(0deg); filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.8)); }
+            15% { transform: rotate(-25deg); }
+            30% { transform: rotate(22deg); }
+            45% { transform: rotate(-18deg); }
+            60% { transform: rotate(15deg); }
+            75% { transform: rotate(-8deg); }
+        }
+
+        .bell-active {
+            animation: bell-ring 0.7s infinite ease-in-out;
+        }
+
+        @keyframes slide-in {
+            from { transform: scale(0.92) translateY(15px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .slide-in-effect {
+            animation: slide-in 0.2s ease-out forwards;
+        }
+
+        .progress-bar {
+            transition: width 0.03s linear;
+        }
+
+        .neurousal-glow {
+            box-shadow: 0 0 25px rgba(220, 38, 38, 0.15);
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+    </style>
 </head>
-<body>
-  <h1>Entrena tu corteza prefrontal</h1>
+
+<body class="min-h-screen text-slate-100 flex flex-col justify-between p-4 md:p-6 overflow-x-hidden">
+
+    <header class="w-full max-w-2xl mx-auto flex justify-between items-center bg-slate-950/90 backdrop-blur-md p-4 rounded-3xl border border-red-950/40 shadow-xl mb-4 neurousal-glow">
+        <div class="flex items-center gap-3">
+            <div class="relative w-10 h-10 flex items-center justify-center bg-black/60 rounded-full border border-red-600/50 overflow-hidden shadow-lg">
+                <img src="https://lh3.googleusercontent.com/d/1K1VBT4_Bqpb5OV0XJKCpx6tukX6y1KGb" 
+                     alt="NEUROUSAL" 
+                     class="w-8 h-8 object-contain"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="hidden absolute inset-0 items-center justify-center bg-slate-900 text-[8px] font-bold text-red-500 text-center flex-col">
+                    🧠<span class="logo-font text-[7px] text-red-600">NRS</span>
+                </div>
+            </div>
+            <div>
+                <h1 class="logo-font text-2xl text-red-600 tracking-wider font-bold leading-none">NEUROUSAL</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Entrenamiento Prefrontal</p>
+            </div>
+        </div>
+        
+        <div class="flex gap-3 text-center">
+            <div class="bg-slate-900/80 px-4 py-2 rounded-2xl border border-red-900/30">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Acciones</p>
+                <p id="action-count" class="text-2xl font-black text-red-500">0</p>
+            </div>
+            <div class="bg-slate-900/80 px-4 py-2 rounded-2xl border border-slate-800">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Tiempo</p>
+                <p id="elapsed-time" class="text-2xl font-black text-white">00:00</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-2xl mx-auto flex flex-col justify-center items-center my-2">
+        
+        <div id="start-screen" class="w-full bg-slate-950/95 backdrop-blur-md p-6 md:p-10 rounded-3xl border border-red-950/40 shadow-2xl space-y-8 neurousal-glow">
+            
+            <div class="flex flex-col items-center text-center space-y-5">
+                <h2 class="title-font text-3xl md:text-4xl font-bold text-white">
+                    Entrena tu Corteza Prefrontal
+                </h2>
+
+                <div class="flex flex-col items-center justify-center space-y-3">
+                    <div class="text-9xl leading-none select-none">🟢</div>
+                    <h3 class="title-font text-2xl md:text-3xl font-black text-emerald-400 tracking-wide">
+                        INSTRUCCIONES
+                    </h3>
+                    <p class="text-slate-300 text-sm md:text-base max-w-lg leading-relaxed text-center">
+                        Realiza las acciones corporales físicas de forma continua. ¡Activa tu corteza prefrontal!
+                    </p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="title-font text-center text-2xl md:text-3xl font-black text-white tracking-wide">
+                    TEN EN CUENTA
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900/80 p-5 rounded-2xl border border-yellow-500/20 flex flex-col items-center text-center space-y-3">
+                        <span class="text-5xl">⭐</span>
+                        <h3 class="title-font text-yellow-400 font-bold text-lg">REGLA DE LA ESTRELLA</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Si ves la <strong>Estrella Gigante</strong>, debes hacer <strong>lo contrario</strong> de lo que pide la pantalla.
+                        </p>
+                    </div>
+                    <div class="bg-slate-900/80 p-5 rounded-2xl border border-red-500/20 flex flex-col items-center text-center space-y-3">
+                        <span class="text-5xl animate-bounce">🔔</span>
+                        <h3 class="title-font text-red-500 font-bold text-lg">REGLA DE LA CAMPANA</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Si suena la <strong>Campana Potente</strong>, ¡no hagas nada! Quédate completamente quieto y congelado.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 space-y-6">
+                <h3 class="font-bold text-sm text-red-500 uppercase tracking-widest border-b border-slate-800 pb-3 flex items-center gap-2">
+                    ⚙️ Ajustes de la Sesión
+                </h3>
+                
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-base text-slate-200 font-bold">Tiempo Base por Acción:</label>
+                        <span id="speed-val" class="text-lg font-black text-red-500 bg-red-500/10 px-3 py-1 rounded-lg">3.5s</span>
+                    </div>
+                    <input type="range" id="speed-slider" min="1.0" max="6.0" step="0.5" value="3.5" 
+                           class="w-full h-3 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-red-600">
+                    <div class="flex justify-between text-xs text-slate-500 font-bold">
+                        <span>🔥 1.0s Nivel Experto</span>
+                        <span>🐢 6.0s Nivel Principiante</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between py-3 border-t border-slate-800/60">
+                    <div>
+                        <span class="text-sm text-slate-200 font-bold block">Aceleración Progresiva</span>
+                        <span class="text-xs text-slate-400 block">El tiempo disminuye progresivamente cada 3 acciones completadas.</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-progressive" class="sr-only peer" checked>
+                        <div class="w-12 h-7 bg-slate-950 rounded-full peer peer-focus:ring-2 peer-focus:ring-red-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-red-600"></div>
+                    </label>
+                </div>
+            </div>
+
+            <button id="btn-start" class="w-full py-5 bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-black text-lg rounded-2xl shadow-lg transform active:scale-95 transition-all uppercase tracking-wider">
+                ¡Empezar a Jugar! 🚀
+            </button>
+        </div>
+
+        <div id="game-screen" class="hidden w-full space-y-4">
+            
+            <div id="card" class="relative w-full bg-slate-950/95 backdrop-blur-md p-6 md:p-10 rounded-3xl border-2 border-red-600 shadow-2xl flex flex-col items-center justify-center text-center min-h-[420px] neurousal-glow">
+                
+                <div class="absolute top-0 left-0 right-0 h-3 bg-slate-900 rounded-t-3xl overflow-hidden">
+                    <div id="timer-bar" class="h-full bg-red-600 progress-bar" style="width: 100%;"></div>
+                </div>
+
+                <div id="speed-badge" class="absolute top-6 right-6 hidden bg-red-600/10 border border-red-600/30 text-red-500 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-lg">
+                    Ritmo: <span id="current-speed-text">3.5</span>s
+                </div>
+
+                <div id="phase-action" class="space-y-8 w-full slide-in-effect">
+                    
+                    <div class="space-y-3">
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-widest block">Instrucción Física:</span>
+                        <h2 id="action-title" class="title-font text-3xl md:text-5xl text-white leading-tight font-black tracking-wide">
+                            <!-- Acción actual -->
+                        </h2>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center h-48 md:h-56 w-full">
+                        <div id="giant-star" class="hidden text-9xl text-yellow-400 star-active select-none leading-none">⭐</div>
+                        <div id="giant-bell" class="hidden text-9xl text-red-600 bell-active select-none leading-none">🔔</div>
+                        <div id="giant-normal" class="hidden text-9xl select-none leading-none">🟢</div>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <div id="action-badge-text" class="text-sm font-bold uppercase tracking-widest px-6 py-2 rounded-full">
+                            <!-- Texto Modificador -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 justify-center items-center">
+                <button id="btn-pause" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-sm font-bold rounded-2xl transition-all">
+                    Pausar ⏸️
+                </button>
+                <button id="btn-exit" class="px-6 py-3 bg-red-950/30 hover:bg-red-900/40 border border-red-900/50 text-red-400 text-sm font-bold rounded-2xl transition-all">
+                    Salir 🚪
+                </button>
+            </div>
+        </div>
+
+        <div id="pause-screen" class="hidden w-full bg-slate-950/95 backdrop-blur-md p-10 rounded-3xl border border-slate-800 shadow-2xl text-center space-y-6">
+            <div class="space-y-3">
+                <span class="text-6xl inline-block animate-pulse">⏸️</span>
+                <h2 class="title-font text-3xl text-red-500 font-bold">Entrenamiento en Pausa</h2>
+                <p class="text-slate-400 text-base">¡Tómate un respiro rápido para recuperar tu energía mental y corporal!</p>
+            </div>
+            <button id="btn-resume" class="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-black text-base rounded-2xl shadow-lg uppercase tracking-wider transition-all">
+                Reanudar Sesión ▶️
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="w-full max-w-xl mx-auto text-center text-slate-500 text-[11px] mt-4 pt-3 border-t border-slate-900">
+        NEUROUSAL 2026 • Creado por: <strong>Alvaro del Campo y Ana M Martín-Nogueras</strong>
+    </footer>
+
+    <script>
+        const ACTIONS = [
+            { id: 'izq_brazo', text: '¡Levanta el brazo izquierdo!', oppositeText: '¡Levanta el brazo derecho!' },
+            { id: 'der_brazo', text: '¡Levanta el brazo derecho!', oppositeText: '¡Levanta el brazo izquierdo!' },
+            { id: 'izq_hombro', text: '¡Toca tu hombro izquierdo!', oppositeText: '¡Toca tu hombro derecho!' },
+            { id: 'der_hombro', text: '¡Toca tu hombro derecho!', oppositeText: '¡Toca tu hombro izquierdo!' },
+            { id: 'izq_oreja', text: '¡Toca tu oreja izquierda!', oppositeText: '¡Toca tu oreja derecha!' },
+            { id: 'der_oreja', text: '¡Toca tu oreja derecha!', oppositeText: '¡Toca tu oreja izquierda!' },
+            { id: 'pie_izq', text: '¡Apóyate en el pie izquierdo!', oppositeText: '¡Apóyate en el pie derecho!' },
+            { id: 'pie_der', text: '¡Apóyate en el pie derecho!', oppositeText: '¡Apóyate en el pie izquierdo!' },
+            { id: 'ambos_brazos', text: '¡Levanta ambos brazos!', oppositeText: null },
+            { id: 'mano_cabeza', text: '¡Pon una mano en la cabeza!', oppositeText: null },
+            { id: 'sentadilla', text: '¡Haz una sentadilla rápida!', oppositeText: null }
+        ];
+
+        let actionCount = 0;
+        let startTime = 0;
+        let gameActive = false;
+        let isPaused = false;
+        
+        let initialSpeed = 3500;
+        let isProgressive = true;
+
+        let currentAction = null;
+        let currentModifier = null;
+
+        let actionInterval = null;
+        let timeRemaining = 0;
+        let totalDuration = 0;
+        let elapsedTimerInterval = null;
+
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const pauseScreen = document.getElementById('pause-screen');
+        
+        const actionCountDisplay = document.getElementById('action-count');
+        const elapsedTimeDisplay = document.getElementById('elapsed-time');
+
+        const card = document.getElementById('card');
+
+        const giantStar = document.getElementById('giant-star');
+        const giantBell = document.getElementById('giant-bell');
+        const giantNormal = document.getElementById('giant-normal');
+        const actionBadgeText = document.getElementById('action-badge-text');
+        const actionTitle = document.getElementById('action-title');
+        const timerBar = document.getElementById('timer-bar');
+        
+        const speedBadge = document.getElementById('speed-badge');
+        const currentSpeedText = document.getElementById('current-speed-text');
+
+        const speedSlider = document.getElementById('speed-slider');
+        const speedVal = document.getElementById('speed-val');
+        const btnStart = document.getElementById('btn-start');
+        
+        const btnPause = document.getElementById('btn-pause');
+        const btnResume = document.getElementById('btn-resume');
+        const btnExit = document.getElementById('btn-exit');
+
+        speedSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            speedVal.textContent = `${val.toFixed(1)}s`;
+            initialSpeed = val * 1000;
+        });
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'bell') {
+                const playClang = (delay) => {
+                    const freqs = [587.33, 880, 1174.66, 1318.51];
+                    freqs.forEach((f, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(f, now + delay);
+                        
+                        const decay = 2.4 / (i + 1);
+                        gain.gain.setValueAtTime(0.25, now + delay);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + decay);
+                        
+                        osc.start(now + delay);
+                        osc.stop(now + delay + decay);
+                    });
+                };
+                
+                playClang(0);
+                playClang(0.18);
+
+            } else if (type === 'next') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(660, now);
+
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+                osc.start(now);
+                osc.stop(now + 0.12);
+            }
+        }
+
+        btnStart.addEventListener('click', startGame);
+        btnPause.addEventListener('click', pauseGame);
+        btnResume.addEventListener('click', resumeGame);
+        btnExit.addEventListener('click', exitGame);
+
+        function startGame() {
+            actionCount = 0;
+            startTime = Date.now();
+            gameActive = true;
+            isPaused = false;
+            initialSpeed = parseFloat(speedSlider.value) * 1000;
+            isProgressive = document.getElementById('toggle-progressive').checked;
+
+            actionCountDisplay.textContent = actionCount;
+            elapsedTimeDisplay.textContent = "00:00";
+
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+
+            if (isProgressive) {
+                speedBadge.classList.remove('hidden');
+            } else {
+                speedBadge.classList.add('hidden');
+            }
+
+            if (elapsedTimerInterval) clearInterval(elapsedTimerInterval);
+            elapsedTimerInterval = setInterval(updateGlobalTimer, 1000);
+
+            showActionPhase();
+        }
+
+        function updateGlobalTimer() {
+            if (isPaused || !gameActive) return;
+
+            const diff = Date.now() - startTime;
+            const secs = Math.floor(diff / 1000) % 60;
+            const mins = Math.floor(diff / 60000);
+
+            elapsedTimeDisplay.textContent = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function showActionPhase() {
+            if (!gameActive || isPaused) return;
+
+            const roll = Math.random();
+
+            if (roll < 0.60) {
+                currentModifier = 'normal';
+            } else if (roll < 0.90) {
+                currentModifier = 'star';
+            } else {
+                currentModifier = 'bell';
+            }
+
+            if (currentModifier === 'star') {
+                const validActions = ACTIONS.filter(a => a.oppositeText !== null);
+                currentAction = validActions[Math.floor(Math.random() * validActions.length)];
+            } else {
+                currentAction = ACTIONS[Math.floor(Math.random() * ACTIONS.length)];
+            }
+
+            actionTitle.textContent = currentAction.text;
+
+            giantStar.classList.add('hidden');
+            giantBell.classList.add('hidden');
+            giantNormal.classList.add('hidden');
+
+            if (currentModifier === 'star') {
+                giantStar.classList.remove('hidden');
+                actionBadgeText.textContent = "⭐ ¡HAZ LO CONTRARIO! ⭐";
+                actionBadgeText.className = "text-sm font-bold uppercase tracking-widest px-5 py-2 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/50";
+                card.className = "relative w-full bg-slate-950/95 backdrop-blur-md p-6 md:p-10 rounded-3xl border-2 border-yellow-500 shadow-2xl flex flex-col items-center justify-center text-center min-h-[420px] slide-in-effect";
+            } else if (currentModifier === 'bell') {
+                giantBell.classList.remove('hidden');
+                actionBadgeText.textContent = "🔔 ¡CAMPANA! QUÉDATE INMÓVIL 🔔";
+                actionBadgeText.className = "text-sm font-bold uppercase tracking-widest px-5 py-2 rounded-full bg-red-600/20 text-red-500 border border-red-500/50";
+                card.className = "relative w-full bg-slate-950/95 backdrop-blur-md p-6 md:p-10 rounded-3xl border-2 border-red-600 shadow-2xl flex flex-col items-center justify-center text-center min-h-[420px] slide-in-effect";
+                playSound('bell');
+            } else {
+                giantNormal.classList.remove('hidden');
+                actionBadgeText.textContent = "🟢 REACCIÓN NORMAL 🟢";
+                actionBadgeText.className = "text-sm font-bold uppercase tracking-widest px-5 py-2 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50";
+                card.className = "relative w-full bg-slate-950/95 backdrop-blur-md p-6 md:p-10 rounded-3xl border-2 border-emerald-500 shadow-2xl flex flex-col items-center justify-center text-center min-h-[420px] slide-in-effect";
+            }
+
+            let speedLimit = initialSpeed;
+
+            if (isProgressive) {
+                const accelerateBy = Math.floor(actionCount / 3) * 150;
+                speedLimit = Math.max(1000, initialSpeed - accelerateBy);
+                currentSpeedText.textContent = (speedLimit / 1000).toFixed(2);
+            }
+
+            timeRemaining = speedLimit;
+            totalDuration = speedLimit;
+            timerBar.style.backgroundColor = '#dc2626';
+
+            if (actionInterval) clearInterval(actionInterval);
+
+            const actionStep = 30;
+
+            actionInterval = setInterval(() => {
+                if (isPaused) return;
+
+                timeRemaining -= actionStep;
+
+                const percentage = Math.max(0, (timeRemaining / totalDuration) * 100);
+                timerBar.style.width = `${percentage}%`;
+
+                if (percentage < 30) {
+                    timerBar.style.backgroundColor = '#ef4444';
+                } else if (percentage < 60) {
+                    timerBar.style.backgroundColor = '#f59e0b';
+                } else {
+                    timerBar.style.backgroundColor = '#dc2626';
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(actionInterval);
+                    playSound('next');
+                    
+                    actionCount++;
+                    actionCountDisplay.textContent = actionCount;
+
+                    showActionPhase();
+                }
+            }, actionStep);
+        }
+
+        function pauseGame() {
+            isPaused = true;
+            gameScreen.classList.add('hidden');
+            pauseScreen.classList.remove('hidden');
+        }
+
+        function resumeGame() {
+            isPaused = false;
+            pauseScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+        }
+
+        function exitGame() {
+            gameActive = false;
+            isPaused = false;
+
+            if (actionInterval) clearInterval(actionInterval);
+            if (elapsedTimerInterval) clearInterval(elapsedTimerInterval);
+            
+            gameScreen.classList.add('hidden');
+            pauseScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
